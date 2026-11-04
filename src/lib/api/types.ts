@@ -249,3 +249,135 @@ export interface ProgramPage {
   years?: number[];
   updated_at: string;
 }
+
+// ── Scholarship exam ────────────────────────────────────────────────────────
+
+export type ExamClassLevel = 8 | 9 | 10;
+export type ExamPaymentMethod = "bkash" | "nagad" | "rocket" | "offline";
+export type ExamStatus = "pending" | "verified" | "rejected";
+
+export interface ExamCenter {
+  id: number;
+  name: string;
+  location: string;
+  short_name: string;
+  order: number;
+  is_active: boolean;
+}
+
+export interface ExamContact {
+  name: string;
+  role: string;
+  phone: string;
+}
+
+export interface ExamConfig {
+  title: string;
+  short_title: string;
+  year: number;
+  application_prefix: string;
+  exam_date: string | null; // YYYY-MM-DD
+  exam_time: string;
+  deadline: string | null; // YYYY-MM-DD, inclusive
+  fee: number;
+  bkash_number: string;
+  nagad_number: string;
+  rocket_number: string;
+  applications_open: boolean;
+  show_home_banner: boolean;
+  admit_download_open: boolean;
+  roll_start_8: number;
+  roll_start_9: number;
+  roll_start_10: number;
+  contacts: ExamContact[];
+  accepting: boolean;
+  deadline_passed: boolean;
+  centers: ExamCenter[];
+  updated_at: string;
+}
+
+export interface ExamApplyBody {
+  name_bn: string;
+  name_en: string;
+  mother_name: string;
+  father_name: string;
+  phone: string;
+  photo_url: string;
+  class_level: ExamClassLevel;
+  institution: string;
+  village: string;
+  union: string;
+  center: number;
+  payment_method: Exclude<ExamPaymentMethod, "offline">;
+  sender_number: string;
+  trx_id: string;
+  website?: string; // honeypot
+}
+
+/** What a student sees for their own application. */
+export interface ExamApplicationStatus {
+  application_no: string;
+  name_bn: string;
+  name_en: string;
+  photo_url: string;
+  class_level: ExamClassLevel;
+  class_label: string;
+  institution: string;
+  center: ExamCenter;
+  payment_method: ExamPaymentMethod;
+  payment_label: string;
+  trx_id: string;
+  amount: number;
+  status: ExamStatus;
+  serial_no: number | null;
+  roll_no: number | null;
+  admit_available: boolean;
+  note: string;
+  created_at: string;
+}
+
+export interface ExamApplication {
+  id: number;
+  exam_year: number;
+  application_no: string;
+  name_bn: string;
+  name_en: string;
+  mother_name: string;
+  father_name: string;
+  phone: string;
+  photo_url: string;
+  class_level: ExamClassLevel;
+  class_label: string;
+  institution: string;
+  village: string;
+  union: string;
+  upazila: string;
+  district: string;
+  center: number;
+  center_name: string;
+  center_short: string;
+  payment_method: ExamPaymentMethod;
+  payment_label: string;
+  sender_number: string;
+  trx_id: string;
+  amount: number;
+  status: ExamStatus;
+  note: string;
+  serial_no: number | null;
+  roll_no: number | null;
+  verified_at: string | null;
+  admit_downloaded_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ExamStats {
+  total: number;
+  pending: number;
+  verified: number;
+  rejected: number;
+  collected: number;
+  with_roll: number;
+  downloaded: number;
+  verified_by_class: Record<"8" | "9" | "10", number>;
+}

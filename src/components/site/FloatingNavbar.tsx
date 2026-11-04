@@ -6,6 +6,13 @@ import { NAV_LINKS, SITE } from "@/lib/site-content";
 import { committeeApi } from "@/lib/api";
 import { ecOrdinal } from "@/routes/ec.$year";
 import logoPusab from "@/assets/logo-pusab.png";
+import {
+  ANNOUNCEMENT_BAR_H,
+  ExamAnnouncementBar,
+  ExamNavButton,
+  useExamPromo,
+} from "@/components/site/ExamHome";
+import { EXAM_PATH, EXAM_STATUS_PATH } from "@/lib/exam";
 
 type NavChild = { to: string; label: string; children?: readonly NavChild[] };
 type NavItem = { to: string; label: string; children?: readonly NavChild[] };
@@ -192,6 +199,9 @@ export function FloatingNavbar() {
       prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
     );
   const [pastYears, setPastYears] = useState<number[]>([]);
+  const examPromo = useExamPromo();
+  // The exam strip sits above the navbar on the homepage until you scroll.
+  const showExamBar = pathname === "/" && !!examPromo && !scrolled;
 
   // Load past (non-current) session years for the "Previous EC" submenu.
   // We always list the full history 1st→12th EC (2014–2025); any year that
@@ -307,11 +317,27 @@ export function FloatingNavbar() {
 
   return (
     <>
+      <AnimatePresence initial={false}>
+        {showExamBar && examPromo && (
+          <motion.div
+            key="exam-bar"
+            initial={{ y: -ANNOUNCEMENT_BAR_H }}
+            animate={{ y: 0 }}
+            exit={{ y: -ANNOUNCEMENT_BAR_H }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-x-0 top-0"
+            style={{ zIndex: 10000 }}
+          >
+            <ExamAnnouncementBar promo={examPromo} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <motion.header
         initial={false}
         animate={{
           paddingInline: scrolled ? 16 : 24,
           paddingTop: scrolled ? 8 : 12,
+          top: showExamBar ? ANNOUNCEMENT_BAR_H : 0,
         }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         id="floating-navbar"
@@ -484,12 +510,16 @@ export function FloatingNavbar() {
 
           {/* CTA */}
           <div className="ml-auto hidden lg:flex items-center gap-2">
+            {pathname === "/" && examPromo ? (
+              <ExamNavButton promo={examPromo} />
+            ) : (
             <Link
               to="/support"
               className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-border px-3.5 py-2 text-sm font-semibold text-foreground/80 transition-colors hover:border-[color-mix(in_oklab,var(--color-accent-1)_45%,transparent)] hover:text-foreground"
             >
               <Heart size={14} className="text-[var(--color-accent-1)]" /> Contribute
             </Link>
+            )}
             <Link to="/join" className="formal-cta group">
               <span>Join PUSAB</span>
             </Link>
@@ -779,6 +809,16 @@ export function FloatingNavbar() {
 
               {/* Footer — CTAs + contact */}
               <div className="border-t border-border px-5 py-5">
+                {examPromo && (
+                  <Link
+                    to={examPromo.mode === "apply" ? EXAM_PATH : EXAM_STATUS_PATH}
+                    onClick={() => setMobileOpen(false)}
+                    className="exam-ui mb-3 flex h-12 items-center justify-center gap-2 rounded-full border-[1.5px] border-[#03A9EC] text-[15px] font-bold text-[#0369A1]"
+                  >
+                    <span className="h-[7px] w-[7px] rounded-full bg-[#16A34A]" />
+                    {examPromo.mode === "apply" ? "মেধাবৃত্তি পরীক্ষায় আবেদন" : "প্রবেশপত্র ডাউনলোড"}
+                  </Link>
+                )}
                 <div className="flex gap-3">
                   <Link
                     to="/support"

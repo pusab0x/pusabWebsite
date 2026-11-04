@@ -293,3 +293,46 @@
 }
 .dash-theme ::selection { background: #BAE6FD; color: #0B1B2B; }
 .dash-scroll { scrollbar-width: thin; scrollbar-color: #16385C transparent; }
+
+/* Scholarship exam pages — Bengali-first type (Hind Siliguri), Inter for
+   Latin text and numbers set in English. */
+.exam-ui,
+.exam-ui h1, .exam-ui h2, .exam-ui h3, .exam-ui h4 {
+  font-family: "Hind Siliguri", "Inter", system-ui, sans-serif;
+  letter-spacing: normal;
+}
+.exam-ui .font-inter { font-family: "Inter", "Hind Siliguri", system-ui, sans-serif; }
+.exam-ui .font-jakarta { font-family: "Plus Jakarta Sans", "Inter", sans-serif; }
+.exam-ui input, .exam-ui select, .exam-ui textarea, .exam-ui button { font: inherit; }
+.exam-field {
+  height: 48px;
+  width: 100%;
+  padding: 0 14px;
+  border: 1px solid #CBD5E1;
+  border-radius: 12px;
+  background: #FFFFFF;
+  color: #0F172A;
+  font-size: 16px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.exam-field:focus { border-color: #0284C7; box-shadow: 0 0 0 4px rgb(2 132 199 / 0.15); }
+.exam-field[aria-invalid="true"] { border-color: #DC2626; }
+.exam-field::placeholder { color: #94A3B8; }
+@media (max-width: 639px) { .exam-field { height: 50px; } }
+
+/* Print: admit cards / attendance sheets live in a .print-area portalled
+   into <body>; while printing, it is the only thing on the page. */
+.print-area { display: none; }
+@media print {
+  body.exam-printing { background: #FFFFFF !important; }
+  body.exam-printing > *:not(.print-area) { display: none !important; }
+  body.exam-printing > .print-area {
+    display: block !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-page { page-break-after: always; break-after: page; }
+  .print-page:last-child { page-break-after: auto; break-after: auto; }
+}
+@page { size: A4; margin: 10mm 0; }

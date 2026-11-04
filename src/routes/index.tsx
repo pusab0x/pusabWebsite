@@ -28,6 +28,14 @@ import { MomentsPreview } from "@/components/site/MomentsPreview";
 import { UpcomingPrograms } from "@/components/site/UpcomingPrograms";
 import { LeadershipPreview } from "@/components/site/LeadershipPreview";
 import { TestimonialsCarousel } from "@/components/site/TestimonialsCarousel";
+import {
+  ExamHeroButton,
+  ExamHeroCard,
+  ExamHeroPill,
+  ExamMobileBar,
+  ExamStepsSection,
+  useExamPromo,
+} from "@/components/site/ExamHome";
 import { SITE, buildStats } from "@/lib/site-content";
 import { settingsApi, type SiteSettings } from "@/lib/api";
 import { usePageHero } from "@/lib/usePageHero";
@@ -219,6 +227,8 @@ function SayorSection() {
 function Index() {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const hero = usePageHero("home");
+  // While the scholarship exam is open, the hero leads with it.
+  const examPromo = useExamPromo();
   const heroImageUrls = hero.images.map((img) => img.image_url).join("|");
   // Dashboard images lead, then the bundled slides — so the carousel keeps
   // rotating even when only one hero has been uploaded.
@@ -254,6 +264,9 @@ function Index() {
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="mx-auto w-fit"
             >
+              {examPromo ? (
+                <ExamHeroPill promo={examPromo} />
+              ) : (
               <div className="formal-pill flex items-center gap-2.5 text-xs font-medium text-white/90">
                 <span className="relative flex h-2 w-2">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--color-accent-1)] opacity-60" />
@@ -263,6 +276,7 @@ function Index() {
                   Student-led · Non-political · Community-focused
                 </span>
               </div>
+              )}
             </motion.div>
 
             <div className="mt-7">
@@ -309,17 +323,42 @@ function Index() {
               transition={{ delay: 1.05, duration: 0.7 }}
               className="mt-9 flex flex-wrap items-center justify-center gap-3"
             >
-              <GradientButton to="/programs">Explore Our Programs</GradientButton>
-              <GradientButton
-                to="/about"
-                variant="ghost"
-                className="text-white! border-white/45! bg-white/5 backdrop-blur-sm hover:bg-white/15! hover:border-white/70!"
-              >
-                About PUSAB{" "}
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-              </GradientButton>
+              {examPromo ? (
+                <>
+                  <ExamHeroButton promo={examPromo} />
+                  <GradientButton
+                    to="/programs"
+                    variant="ghost"
+                    className="h-[50px] w-full justify-center text-[15px]! text-white! border-white/45! bg-white/5 backdrop-blur-sm hover:bg-white/15! hover:border-white/70! sm:h-[52px] sm:w-auto"
+                  >
+                    Explore Our Programs
+                  </GradientButton>
+                </>
+              ) : (
+                <>
+                  <GradientButton to="/programs">Explore Our Programs</GradientButton>
+                  <GradientButton
+                    to="/about"
+                    variant="ghost"
+                    className="text-white! border-white/45! bg-white/5 backdrop-blur-sm hover:bg-white/15! hover:border-white/70!"
+                  >
+                    About PUSAB{" "}
+                    <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                  </GradientButton>
+                </>
+              )}
             </motion.div>
 
+            {examPromo ? (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.2, duration: 0.7 }}
+                className="mt-10 md:mt-[26px]"
+              >
+                <ExamHeroCard promo={examPromo} />
+              </motion.div>
+            ) : (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -332,6 +371,7 @@ function Index() {
               <span className="hidden sm:inline text-white/30">/</span>
               <span>Bishwambarpur · Sunamganj</span>
             </motion.div>
+            )}
           </div>
         </div>
 
@@ -358,6 +398,9 @@ function Index() {
           }
         `}</style>
       </section>
+
+      {examPromo && <ExamStepsSection promo={examPromo} />}
+      {examPromo && <ExamMobileBar promo={examPromo} />}
 
       {/* STATS */}
       <section className="border-y border-border bg-[var(--color-surface-2)]">

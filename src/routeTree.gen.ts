@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as SecretaryMessageRouteImport } from './routes/secretary-message'
+import { Route as ScholarshipExamRouteImport } from './routes/scholarship-exam'
 import { Route as SayorRouteImport } from './routes/sayor'
 import { Route as PublicityRouteImport } from './routes/publicity'
 import { Route as ProgramsRouteImport } from './routes/programs'
@@ -26,6 +27,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as HonorBoardIndexRouteImport } from './routes/honor-board/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as ScholarshipExamStatusRouteImport } from './routes/scholarship-exam_.status'
 import { Route as ProgramsSlugRouteImport } from './routes/programs_.$slug'
 import { Route as HonorBoardYearRouteImport } from './routes/honor-board/$year'
 import { Route as EcYearRouteImport } from './routes/ec.$year'
@@ -39,6 +41,11 @@ const SupportRoute = SupportRouteImport.update({
 const SecretaryMessageRoute = SecretaryMessageRouteImport.update({
   id: '/secretary-message',
   path: '/secretary-message',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScholarshipExamRoute = ScholarshipExamRouteImport.update({
+  id: '/scholarship-exam',
+  path: '/scholarship-exam',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SayorRoute = SayorRouteImport.update({
@@ -116,6 +123,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/dashboard/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ScholarshipExamStatusRoute = ScholarshipExamStatusRouteImport.update({
+  id: '/scholarship-exam_/status',
+  path: '/scholarship-exam/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramsSlugRoute = ProgramsSlugRouteImport.update({
   id: '/programs_/$slug',
   path: '/programs/$slug',
@@ -151,12 +163,14 @@ export interface FileRoutesByFullPath {
   '/programs': typeof ProgramsRoute
   '/publicity': typeof PublicityRoute
   '/sayor': typeof SayorRoute
+  '/scholarship-exam': typeof ScholarshipExamRoute
   '/secretary-message': typeof SecretaryMessageRoute
   '/support': typeof SupportRoute
   '/dashboard/$section': typeof DashboardSectionRoute
   '/ec/$year': typeof EcYearRoute
   '/honor-board/$year': typeof HonorBoardYearRoute
   '/programs/$slug': typeof ProgramsSlugRoute
+  '/scholarship-exam/status': typeof ScholarshipExamStatusRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/honor-board/': typeof HonorBoardIndexRoute
 }
@@ -173,12 +187,14 @@ export interface FileRoutesByTo {
   '/programs': typeof ProgramsRoute
   '/publicity': typeof PublicityRoute
   '/sayor': typeof SayorRoute
+  '/scholarship-exam': typeof ScholarshipExamRoute
   '/secretary-message': typeof SecretaryMessageRoute
   '/support': typeof SupportRoute
   '/dashboard/$section': typeof DashboardSectionRoute
   '/ec/$year': typeof EcYearRoute
   '/honor-board/$year': typeof HonorBoardYearRoute
   '/programs/$slug': typeof ProgramsSlugRoute
+  '/scholarship-exam/status': typeof ScholarshipExamStatusRoute
   '/dashboard': typeof DashboardIndexRoute
   '/honor-board': typeof HonorBoardIndexRoute
 }
@@ -197,12 +213,14 @@ export interface FileRoutesById {
   '/programs': typeof ProgramsRoute
   '/publicity': typeof PublicityRoute
   '/sayor': typeof SayorRoute
+  '/scholarship-exam': typeof ScholarshipExamRoute
   '/secretary-message': typeof SecretaryMessageRoute
   '/support': typeof SupportRoute
   '/dashboard/$section': typeof DashboardSectionRoute
   '/ec/$year': typeof EcYearRoute
   '/honor-board/$year': typeof HonorBoardYearRoute
   '/programs_/$slug': typeof ProgramsSlugRoute
+  '/scholarship-exam_/status': typeof ScholarshipExamStatusRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/honor-board/': typeof HonorBoardIndexRoute
 }
@@ -222,12 +240,14 @@ export interface FileRouteTypes {
     | '/programs'
     | '/publicity'
     | '/sayor'
+    | '/scholarship-exam'
     | '/secretary-message'
     | '/support'
     | '/dashboard/$section'
     | '/ec/$year'
     | '/honor-board/$year'
     | '/programs/$slug'
+    | '/scholarship-exam/status'
     | '/dashboard/'
     | '/honor-board/'
   fileRoutesByTo: FileRoutesByTo
@@ -244,12 +264,14 @@ export interface FileRouteTypes {
     | '/programs'
     | '/publicity'
     | '/sayor'
+    | '/scholarship-exam'
     | '/secretary-message'
     | '/support'
     | '/dashboard/$section'
     | '/ec/$year'
     | '/honor-board/$year'
     | '/programs/$slug'
+    | '/scholarship-exam/status'
     | '/dashboard'
     | '/honor-board'
   id:
@@ -267,12 +289,14 @@ export interface FileRouteTypes {
     | '/programs'
     | '/publicity'
     | '/sayor'
+    | '/scholarship-exam'
     | '/secretary-message'
     | '/support'
     | '/dashboard/$section'
     | '/ec/$year'
     | '/honor-board/$year'
     | '/programs_/$slug'
+    | '/scholarship-exam_/status'
     | '/dashboard/'
     | '/honor-board/'
   fileRoutesById: FileRoutesById
@@ -291,11 +315,13 @@ export interface RootRouteChildren {
   ProgramsRoute: typeof ProgramsRoute
   PublicityRoute: typeof PublicityRoute
   SayorRoute: typeof SayorRoute
+  ScholarshipExamRoute: typeof ScholarshipExamRoute
   SecretaryMessageRoute: typeof SecretaryMessageRoute
   SupportRoute: typeof SupportRoute
   DashboardSectionRoute: typeof DashboardSectionRoute
   EcYearRoute: typeof EcYearRoute
   ProgramsSlugRoute: typeof ProgramsSlugRoute
+  ScholarshipExamStatusRoute: typeof ScholarshipExamStatusRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -313,6 +339,13 @@ declare module '@tanstack/react-router' {
       path: '/secretary-message'
       fullPath: '/secretary-message'
       preLoaderRoute: typeof SecretaryMessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scholarship-exam': {
+      id: '/scholarship-exam'
+      path: '/scholarship-exam'
+      fullPath: '/scholarship-exam'
+      preLoaderRoute: typeof ScholarshipExamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sayor': {
@@ -420,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/scholarship-exam_/status': {
+      id: '/scholarship-exam_/status'
+      path: '/scholarship-exam/status'
+      fullPath: '/scholarship-exam/status'
+      preLoaderRoute: typeof ScholarshipExamStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/programs_/$slug': {
       id: '/programs_/$slug'
       path: '/programs/$slug'
@@ -479,11 +519,13 @@ const rootRouteChildren: RootRouteChildren = {
   ProgramsRoute: ProgramsRoute,
   PublicityRoute: PublicityRoute,
   SayorRoute: SayorRoute,
+  ScholarshipExamRoute: ScholarshipExamRoute,
   SecretaryMessageRoute: SecretaryMessageRoute,
   SupportRoute: SupportRoute,
   DashboardSectionRoute: DashboardSectionRoute,
   EcYearRoute: EcYearRoute,
   ProgramsSlugRoute: ProgramsSlugRoute,
+  ScholarshipExamStatusRoute: ScholarshipExamStatusRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 export const routeTree = rootRouteImport

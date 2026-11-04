@@ -9,6 +9,7 @@ import {
   publicityApi,
   committeeApi,
   contactApi,
+  examApi,
   ApiError,
   type GalleryItem,
   type PublicityPost,
@@ -48,6 +49,9 @@ import {
   MessageSquareQuote,
   GalleryHorizontal,
   ChevronRight,
+  ClipboardList,
+  IdCard,
+  SlidersHorizontal,
 } from "lucide-react";
 import logoPusab from "@/assets/logo-pusab.png";
 import { StatCard, inputCls } from "@/components/dashboard/primitives";
@@ -63,6 +67,9 @@ import { FelicitationSection } from "@/components/dashboard/FelicitationSection"
 import { ProgramPagesSection } from "@/components/dashboard/ProgramPagesSection";
 import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
 import { PageHeroesSection } from "@/components/dashboard/PageHeroesSection";
+import { ExamApplicationsSection } from "@/components/dashboard/exam/ExamApplicationsSection";
+import { ExamAdmitCardsSection } from "@/components/dashboard/exam/ExamAdmitCardsSection";
+import { ExamSettingsSection } from "@/components/dashboard/exam/ExamSettingsSection";
 
 function Centered({ children }: { children: ReactNode }) {
   return (
@@ -210,6 +217,9 @@ function LoginScreen() {
 
 export const NAV = [
   { key: "overview", label: "Overview", Icon: LayoutDashboard, group: "main" },
+  { key: "exam-applications", label: "আবেদনসমূহ", Icon: ClipboardList, group: "exam" },
+  { key: "exam-admit-cards", label: "প্রবেশপত্র ও রোল", Icon: IdCard, group: "exam" },
+  { key: "exam-settings", label: "পরীক্ষার সেটিংস", Icon: SlidersHorizontal, group: "exam" },
   { key: "page-heroes", label: "Page Heroes", Icon: GalleryHorizontal, group: "content" },
   { key: "moments", label: "Moments", Icon: ImageIcon, group: "content" },
   { key: "publicity", label: "Publicity", Icon: Newspaper, group: "content" },
@@ -236,6 +246,7 @@ export function isSection(value: string): value is Section {
 
 const GROUP_LABELS: Record<string, string> = {
   main: "",
+  exam: "মেধাবৃত্তি পরীক্ষা",
   content: "Website content",
   people: "People",
   system: "Inbox & system",
@@ -267,7 +278,7 @@ function NavList({
             {items.map(({ key, label, Icon }) => {
               const active = section === key;
               const badge = badges?.[key];
-              const highlight = key === "messages";
+              const highlight = key === "messages" || key === "exam-applications";
               return (
                 <button
                   key={key}
@@ -383,6 +394,7 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [unread, setUnread] = useState(0);
   const [counts, setCounts] = useState<{ moments?: number; publicity?: number }>({});
+  const [examPending, setExamPending] = useState(0);
   const active = NAV.find((n) => n.key === section)!;
   const email = user?.email ?? "";
 
@@ -392,13 +404,22 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
       .listAll({})
       .then((msgs) => alive && setUnread(msgs.filter((m) => !m.is_read).length))
       .catch(() => {});
+    examApi
+      .stats()
+      .then((s) => alive && setExamPending(s.pending))
+      .catch(() => {});
     Promise.all([galleryApi.listAll(), publicityApi.listAll()])
       .then(([m, p]) => alive && setCounts({ moments: m.length, publicity: p.length }))
       .catch(() => {});
     return () => { alive = false; };
   }, [section]);
 
-  const badges: Badges = { messages: unread, moments: counts.moments, publicity: counts.publicity };
+  const badges: Badges = {
+    messages: unread,
+    moments: counts.moments,
+    publicity: counts.publicity,
+    "exam-applications": examPending,
+  };
 
   const pick = (s: Section) => {
     setDrawer(false);
@@ -491,6 +512,9 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
 
         <main className="mx-auto w-full max-w-[1240px] flex-1 px-5 pb-12 pt-6 sm:px-9">
           {section === "overview" && <Overview onJump={pick} />}
+          {section === "exam-applications" && <ExamApplicationsSection />}
+          {section === "exam-admit-cards" && <ExamAdmitCardsSection />}
+          {section === "exam-settings" && <ExamSettingsSection />}
           {section === "page-heroes" && <PageHeroesSection />}
           {section === "moments" && <MomentsSection />}
           {section === "publicity" && <PublicitySection />}

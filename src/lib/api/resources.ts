@@ -6,6 +6,12 @@ import type {
   AdminUser,
   ContactMessage,
   EcMember,
+  ExamApplication,
+  ExamApplicationStatus,
+  ExamApplyBody,
+  ExamCenter,
+  ExamConfig,
+  ExamStats,
   FelicitationEntry,
   GalleryItem,
   LeaderMessage,
@@ -159,4 +165,84 @@ export const programPagesApi = {
       method: "PATCH",
       body: JSON.stringify(body),
     }),
+};
+
+// Scholarship exam. Config, centres, apply and status are public; the
+// application list and its actions need an admin token.
+type ExamListQuery = {
+  status?: string;
+  class_level?: number | string;
+  center?: number | string;
+  q?: string;
+  has_roll?: boolean;
+  order?: "roll";
+};
+
+export const examApi = {
+  config: () => apiFetch<ExamConfig>("/api/exam/config/", {}, { auth: false }),
+  updateConfig: (body: Partial<ExamConfig>) =>
+    apiFetch<ExamConfig>("/api/exam/config/", { method: "PATCH", body: JSON.stringify(body) }),
+
+  centers: () => apiFetch<ExamCenter[]>("/api/exam/centers/"),
+  createCenter: (body: Partial<ExamCenter>) =>
+    apiFetch<ExamCenter>("/api/exam/centers/", { method: "POST", body: JSON.stringify(body) }),
+  updateCenter: (id: number, body: Partial<ExamCenter>) =>
+    apiFetch<ExamCenter>(`/api/exam/centers/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  removeCenter: (id: number) => apiFetch<void>(`/api/exam/centers/${id}/`, { method: "DELETE" }),
+
+  apply: (body: ExamApplyBody) =>
+    apiFetch<ExamApplicationStatus>(
+      "/api/exam/apply/",
+      { method: "POST", body: JSON.stringify(body) },
+      { auth: false },
+    ),
+  status: (application_no: string, phone: string, markDownloaded = false) =>
+    apiFetch<ExamApplicationStatus>(
+      "/api/exam/status/",
+      {
+        method: "POST",
+        body: JSON.stringify({ application_no, phone, mark_downloaded: markDownloaded }),
+      },
+      { auth: false },
+    ),
+
+  /** All applications of the current edition matching the filters. */
+  list: async (params?: ExamListQuery): Promise<ExamApplication[]> => {
+    const page = await apiFetch<Paginated<ExamApplication>>(
+      `/api/exam/applications/${qs({ ...params, page_size: 5000 })}`,
+    );
+    return page.results;
+  },
+  stats: () => apiFetch<ExamStats>("/api/exam/applications/stats/"),
+  create: (body: Partial<ExamApplication>) =>
+    apiFetch<ExamApplication>("/api/exam/applications/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  update: (id: number, body: Partial<ExamApplication>) =>
+    apiFetch<ExamApplication>(`/api/exam/applications/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(body),
+    }),
+  remove: (id: number) =>
+    apiFetch<void>(`/api/exam/applications/${id}/`, { method: "DELETE" }),
+  verify: (id: number, note = "") =>
+    apiFetch<ExamApplication>(`/api/exam/applications/${id}/verify/`, {
+      method: "POST",
+      body: JSON.stringify({ note }),
+    }),
+  reject: (id: number, note: string) =>
+    apiFetch<ExamApplication>(`/api/exam/applications/${id}/reject/`, {
+      method: "POST",
+      body: JSON.stringify({ note }),
+    }),
+  reset: (id: number) =>
+    apiFetch<ExamApplication>(`/api/exam/applications/${id}/reset/`, { method: "POST" }),
+  assignRoll: (id: number) =>
+    apiFetch<ExamApplication>(`/api/exam/applications/${id}/assign-roll/`, { method: "POST" }),
+  assignRolls: () =>
+    apiFetch<{ assigned: number }>("/api/exam/applications/assign-rolls/", { method: "POST" }),
 };

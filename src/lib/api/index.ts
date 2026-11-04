@@ -18,6 +18,7 @@ export {
   programPagesApi,
   testimonialsApi,
   pageHeroApi,
+  examApi,
 } from "./resources";
 export { AuthProvider, useAuth } from "./AuthContext";
 export { uploadImage, isUploadConfigured, optimizeImage } from "./upload";
