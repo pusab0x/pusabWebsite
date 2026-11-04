@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, X, Pencil, Trash2, Search, AlertTriangle, ChevronDown } from "lucide-react";
 
 export const inputCls =
-  "mt-1.5 w-full rounded-xl border border-border bg-[var(--color-background)] px-3.5 py-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground/50 focus:border-[var(--color-accent-1)] focus:ring-3 focus:ring-[color-mix(in_oklab,var(--color-accent-1)_15%,transparent)]";
+  "mt-1.5 w-full rounded-[10px] border border-[#E1E9F2] bg-white px-3.5 py-2.5 text-sm text-[#0B1B2B] outline-none transition-[border-color,box-shadow] placeholder:text-[#8A9BB0] hover:border-[#C9D7E6] focus:border-[#0369A1] focus:ring-4 focus:ring-[#0EA5E9]/15";
 
 export function Field({
   label,
@@ -18,11 +18,11 @@ export function Field({
 }) {
   return (
     <label className={"block " + (full ? "sm:col-span-2" : "")}>
-      <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground/70">
+      <span className="text-[13px] font-semibold text-[#4B5E73]">
         {label}
       </span>
       {children}
-      {hint && <span className="mt-1.5 block text-[11px] text-muted-foreground">{hint}</span>}
+      {hint && <span className="mt-1.5 block text-xs text-[#6B7E93]">{hint}</span>}
     </label>
   );
 }
@@ -41,31 +41,23 @@ export function SectionHeader({
   newLabel?: string;
 }) {
   return (
-    <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
-      <div>
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#E1E9F2] bg-white px-6 py-5">
+      <div className="min-w-0">
         <div className="flex items-center gap-3">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight">{title}</h2>
+          <h2 className="text-[22px] font-extrabold tracking-[-0.02em] text-[#0B1B2B]">{title}</h2>
           {count !== undefined && (
-            <span
-              className="rounded-full px-2.5 py-0.5 text-[11px] font-bold tabular-nums text-white"
-              style={{
-                background: "linear-gradient(120deg, var(--color-accent-1), var(--color-accent-2))",
-              }}
-            >
+            <span className="rounded-full bg-[#EEF4FA] px-2.5 py-0.5 text-xs font-semibold tabular-nums text-[#0369A1]">
               {count}
             </span>
           )}
         </div>
-        {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
+        {subtitle && <p className="mt-1 text-sm text-[#4B5E73]">{subtitle}</p>}
       </div>
       <button
         onClick={onNew}
-        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-all hover:shadow-lg hover:opacity-90 active:scale-[0.98]"
-        style={{
-          background: "linear-gradient(120deg, var(--color-accent-1), var(--color-accent-2))",
-        }}
+        className="inline-flex h-11 items-center gap-2 rounded-full bg-[#0369A1] px-5 text-sm font-semibold text-white transition-colors hover:bg-[#075985] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0EA5E9]/30 active:scale-[0.98]"
       >
-        <Plus size={15} /> {newLabel}
+        <Plus size={16} strokeWidth={2.5} /> {newLabel}
       </button>
     </div>
   );
@@ -87,13 +79,13 @@ export function Toolbar({
       <div className="relative min-w-[200px] flex-1">
         <Search
           size={14}
-          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6B7E93]"
         />
         <input
           value={query}
           onChange={(e) => onQuery(e.target.value)}
           placeholder={placeholder}
-          className="w-full rounded-xl border border-border bg-[var(--color-surface)] py-2.5 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground/50 focus:border-[var(--color-accent-1)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-accent-1)_15%,transparent)]"
+          className="h-11 w-full rounded-full border border-[#E1E9F2] bg-white pl-11 pr-4 text-sm outline-none transition-[border-color,box-shadow] placeholder:text-[#8A9BB0] hover:border-[#C9D7E6] focus:border-[#0369A1] focus:ring-4 focus:ring-[#0EA5E9]/15"
         />
       </div>
       {children}
@@ -115,7 +107,7 @@ export function FilterSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="appearance-none rounded-xl border border-border bg-[var(--color-surface)] py-2.5 pl-3.5 pr-8 text-sm font-medium outline-none transition-all focus:border-[var(--color-accent-1)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-accent-1)_15%,transparent)]"
+        className="h-11 appearance-none rounded-full border border-[#E1E9F2] bg-white pl-4 pr-9 text-sm font-medium text-[#0B1B2B] outline-none transition-[border-color,box-shadow] hover:border-[#C9D7E6] focus:border-[#0369A1] focus:ring-4 focus:ring-[#0EA5E9]/15"
       >
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -125,7 +117,7 @@ export function FilterSelect({
       </select>
       <ChevronDown
         size={13}
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+        className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#4B5E73]"
       />
     </div>
   );
@@ -133,14 +125,14 @@ export function FilterSelect({
 
 export function EmptyState({ label, icon }: { label: string; icon?: ReactNode }) {
   return (
-    <div className="grid place-items-center rounded-2xl border border-dashed border-border py-24 text-center">
+    <div className="grid place-items-center rounded-2xl border border-dashed border-[#C9D7E6] bg-white py-20 text-center">
       <div className="flex max-w-sm flex-col items-center gap-4 px-6">
         {icon && (
-          <div className="grid h-14 w-14 place-items-center rounded-2xl border border-border bg-[var(--color-surface)]">
+          <div className="grid h-14 w-14 place-items-center rounded-full bg-[#EEF4FA] text-[#0369A1]">
             {icon}
           </div>
         )}
-        <p className="text-sm font-medium text-muted-foreground">{label}</p>
+        <p className="text-sm font-medium text-[#4B5E73]">{label}</p>
       </div>
     </div>
   );
@@ -187,6 +179,13 @@ export function SkeletonGrid({ cols = 4, rows = 8 }: { cols?: number; rows?: num
   );
 }
 
+const STAT_TONES = {
+  sky: "#0EA5E9",
+  green: "#16A34A",
+  red: "#DC2626",
+  navy: "#0369A1",
+} as const;
+
 export function StatCard({
   label,
   value,
@@ -195,52 +194,41 @@ export function StatCard({
   onClick,
   accent,
   fill,
+  tone,
 }: {
   label: string;
   value: ReactNode;
-  icon: ReactNode;
+  icon?: ReactNode;
   sub?: ReactNode;
   onClick?: () => void;
   accent?: boolean;
   /** Stretch to fill the height of its grid cell — for bento-style layouts. */
   fill?: boolean;
+  /** Colour of the status dot beside the label. */
+  tone?: keyof typeof STAT_TONES;
 }) {
   const Tag = onClick ? "button" : "div";
+  const dot = STAT_TONES[tone ?? (accent ? "red" : "sky")];
   return (
     <Tag
       onClick={onClick}
       className={
-        "group relative flex w-full flex-col overflow-hidden rounded-2xl border p-5 text-left transition-all " +
+        "group relative flex w-full flex-col gap-3 rounded-2xl border border-[#E1E9F2] bg-white p-5 text-left transition-all " +
         (fill ? "h-full " : "") +
-        (accent
-          ? "border-[color-mix(in_oklab,var(--color-accent-1)_30%,transparent)] bg-[color-mix(in_oklab,var(--color-accent-1)_6%,var(--color-surface))]"
-          : "border-border bg-[var(--color-surface)]") +
         (onClick
-          ? " hover:border-[color-mix(in_oklab,var(--color-accent-1)_50%,transparent)] hover:shadow-lg hover:shadow-[color-mix(in_oklab,var(--color-accent-1)_8%,transparent)] cursor-pointer"
+          ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#BAE6FD] hover:shadow-[0_12px_32px_-16px_rgba(11,37,64,0.25)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#0EA5E9]/25"
           : "")
       }
     >
-      <div
-        className="absolute right-0 top-0 h-20 w-20 rounded-bl-full opacity-[0.07]"
-        style={{
-          background: "linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2))",
-        }}
-      />
-      <div className="flex items-start justify-between gap-3">
-        <span
-          className="inline-grid h-9 w-9 place-items-center rounded-xl text-white shadow-sm"
-          style={{
-            background: "linear-gradient(135deg, var(--color-accent-1), var(--color-accent-2))",
-          }}
-        >
-          {icon}
-        </span>
-        <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60 mt-1">
+      <div className="flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2 text-[13px] font-semibold text-[#4B5E73]">
+          {icon && <span className="text-[#8A9BB0] [&>svg]:h-4 [&>svg]:w-4">{icon}</span>}
           {label}
         </span>
+        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: dot }} />
       </div>
-      <p className="mt-4 font-display text-3xl font-black leading-none tabular-nums">{value}</p>
-      {sub && <div className={"mt-1.5 text-xs text-muted-foreground " + (fill ? "mt-auto pt-1.5" : "")}>{sub}</div>}
+      <p className="text-[36px] font-extrabold leading-none tracking-[-0.02em] tabular-nums text-[#0B1B2B]">{value}</p>
+      {sub && <div className={"text-[13px] text-[#4B5E73] " + (fill ? "mt-auto" : "")}>{sub}</div>}
     </Tag>
   );
 }
@@ -250,17 +238,17 @@ export function CardActions({ onEdit, onDelete }: { onEdit: () => void; onDelete
     <div className="flex items-center gap-1">
       <button
         onClick={onEdit}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-[color-mix(in_oklab,var(--color-accent-1)_10%,transparent)] hover:text-[var(--color-accent-1)] hover:scale-110"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#4B5E73] transition-colors hover:bg-[#EEF4FA] hover:text-[#0369A1]"
         aria-label="Edit"
       >
-        <Pencil size={13} />
+        <Pencil size={15} />
       </button>
       <button
         onClick={onDelete}
-        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-red-500/10 hover:text-red-500 hover:scale-110"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[#4B5E73] transition-colors hover:bg-[#FEECEC] hover:text-[#DC2626]"
         aria-label="Delete"
       >
-        <Trash2 size={13} />
+        <Trash2 size={15} />
       </button>
     </div>
   );
@@ -305,7 +293,7 @@ export function Modal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 z-[200] flex items-end justify-center bg-slate-950/70 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+          className="fixed inset-0 z-[200] flex items-end justify-center bg-[#0B2540]/60 p-0 backdrop-blur-[3px] sm:items-center sm:p-6"
         >
           <motion.form
             initial={{ opacity: 0, y: 32, scale: 0.97 }}
@@ -317,17 +305,18 @@ export function Modal({
               e.preventDefault();
               onSubmit();
             }}
-            className="flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl border border-border bg-[var(--color-surface)] shadow-2xl sm:rounded-3xl"
+            className="flex max-h-[92vh] w-full max-w-xl flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_40px_80px_-24px_rgba(11,37,64,0.45)] sm:rounded-[20px]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
-              <div>
-                <h3 className="font-display text-lg font-extrabold tracking-tight">{title}</h3>
+            <div className="flex items-center justify-between gap-4 border-b border-[#E1E9F2] px-6 py-5">
+              <div className="flex items-center gap-3">
+                <span className="h-6 w-1 rounded-full bg-[#0EA5E9]" aria-hidden="true" />
+                <h3 className="text-lg font-bold tracking-[-0.015em] text-[#0B1B2B]">{title}</h3>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="grid h-8 w-8 place-items-center rounded-xl border border-border text-muted-foreground transition-colors hover:border-foreground/20 hover:text-foreground"
+                className="grid h-9 w-9 place-items-center rounded-full bg-[#F0F7FD] text-[#4B5E73] transition-colors hover:bg-[#E1EEF9] hover:text-[#0B1B2B]"
                 aria-label="Close"
               >
                 <X size={15} />
@@ -341,22 +330,18 @@ export function Modal({
 
             {/* Footer */}
             {!hideFooter && (
-              <div className="flex items-center justify-end gap-2.5 border-t border-border bg-[color-mix(in_oklab,var(--color-background)_60%,var(--color-surface))] px-6 py-4">
+              <div className="flex items-center justify-end gap-2.5 border-t border-[#E1E9F2] bg-[#F7FAFD] px-6 py-4">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-xl border border-border px-5 py-2.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-[var(--color-background)] hover:text-foreground"
+                  className="h-11 rounded-full border border-[#D5E1EE] bg-white px-5 text-sm font-semibold text-[#4B5E73] transition-colors hover:border-[#B8CADD] hover:text-[#0B1B2B]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:opacity-90 hover:shadow-lg disabled:opacity-50 active:scale-[0.98]"
-                  style={{
-                    background:
-                      "linear-gradient(120deg, var(--color-accent-1), var(--color-accent-2))",
-                  }}
+                  className="h-11 rounded-full bg-[#0369A1] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#075985] disabled:opacity-50 active:scale-[0.98]"
                 >
                   {saving ? "Saving…" : submitLabel}
                 </button>
@@ -392,7 +377,7 @@ export function useConfirm() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={() => close(false)}
-          className="fixed inset-0 z-[210] grid place-items-center bg-slate-950/70 p-6 backdrop-blur-sm"
+          className="fixed inset-0 z-[210] grid place-items-center bg-[#0B2540]/60 p-6 backdrop-blur-[3px]"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.94, y: 16 }}
@@ -400,25 +385,25 @@ export function useConfirm() {
             exit={{ opacity: 0, scale: 0.94, y: 8 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm overflow-hidden rounded-3xl border border-border bg-[var(--color-surface)] shadow-2xl"
+            className="w-full max-w-sm overflow-hidden rounded-[20px] bg-white shadow-[0_40px_80px_-24px_rgba(11,37,64,0.45)]"
           >
             <div className="px-6 pt-7 pb-6 text-center">
-              <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-red-500/10 text-red-500">
+              <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-full bg-[#FEECEC] text-[#DC2626]">
                 <AlertTriangle size={24} />
               </div>
-              <h3 className="font-display text-lg font-extrabold">{state.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{state.message}</p>
+              <h3 className="text-lg font-bold text-[#0B1B2B]">{state.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-[#4B5E73]">{state.message}</p>
             </div>
-            <div className="flex gap-2.5 border-t border-border bg-[color-mix(in_oklab,var(--color-background)_60%,var(--color-surface))] px-6 py-4">
+            <div className="flex gap-2.5 border-t border-[#E1E9F2] bg-[#F7FAFD] px-6 py-4">
               <button
                 onClick={() => close(false)}
-                className="flex-1 rounded-xl border border-border py-2.5 text-sm font-semibold transition-colors hover:bg-[var(--color-background)]"
+                className="h-11 flex-1 rounded-full border border-[#D5E1EE] bg-white text-sm font-semibold text-[#4B5E73] transition-colors hover:border-[#B8CADD] hover:text-[#0B1B2B]"
               >
                 Cancel
               </button>
               <button
                 onClick={() => close(true)}
-                className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-bold text-white transition-all hover:bg-red-600 active:scale-[0.98]"
+                className="h-11 flex-1 rounded-full bg-[#DC2626] text-sm font-semibold text-white transition-colors hover:bg-[#B91C1C] active:scale-[0.98]"
               >
                 Delete
               </button>

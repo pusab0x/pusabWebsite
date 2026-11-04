@@ -224,3 +224,72 @@
   text-justify: inter-word;
   hyphens: auto;
 }
+
+/* Admin dashboard — "Brand Sky" palette. Scoped to the dashboard root so the
+   public site keeps its own theme; every section reads these tokens. */
+.dash-theme {
+  --background: #F3F7FB;
+  --foreground: #0B1B2B;
+  --surface: #FFFFFF;
+  --surface-2: #F0F7FD;
+  --text: #0B1B2B;
+  --text-muted: #4B5E73;
+  --accent-1: #0369A1;
+  --accent-2: #0369A1;
+  --accent-3: #16A34A;
+  --muted: #EEF4FA;
+  --muted-foreground: #4B5E73;
+  --border: #E1E9F2;
+  --input: #E1E9F2;
+  --ring: #0369A1;
+  --primary: #0369A1;
+  --chart-1: #0EA5E9;
+  --chart-2: #0369A1;
+  --chart-3: #16A34A;
+  --chart-4: #BAE6FD;
+  --chart-5: #DC2626;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-accent-1: var(--accent-1);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Sidebar (navy) */
+  --dash-navy: #0B2540;
+  --dash-navy-2: #102F50;
+  --dash-navy-3: #16385C;
+  --dash-navy-text: #C3D3E4;
+  --dash-navy-label: #8FAACB;
+  --dash-sky: #0EA5E9;
+  --dash-sky-soft: #BAE6FD;
+  --dash-sky-bright: #38BDF8;
+
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+.dash-theme *, .dash-theme *::before, .dash-theme *::after { border-color: var(--border); }
+.dash-theme .font-display,
+.dash-theme h1, .dash-theme h2, .dash-theme h3, .dash-theme h4, .dash-theme h5 {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+.dash-theme ::selection { background: #BAE6FD; color: #0B1B2B; }
+.dash-scroll { scrollbar-width: thin; scrollbar-color: #16385C transparent; }

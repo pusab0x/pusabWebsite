@@ -1,15 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import {
   AuthProvider,
   useAuth,
@@ -26,8 +18,6 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
   type ChartConfig,
 } from "@/components/ui/chart";
 import {
@@ -41,6 +31,7 @@ import {
   Menu,
   X,
   ExternalLink,
+  ArrowRight,
   ArrowUpRight,
   PanelLeftClose,
   PanelLeftOpen,
@@ -56,10 +47,10 @@ import {
   FileText,
   MessageSquareQuote,
   GalleryHorizontal,
-  TrendingUp,
+  ChevronRight,
 } from "lucide-react";
 import logoPusab from "@/assets/logo-pusab.png";
-import { StatCard } from "@/components/dashboard/primitives";
+import { StatCard, inputCls } from "@/components/dashboard/primitives";
 import { MomentsSection } from "@/components/dashboard/MomentsSection";
 import { PublicitySection } from "@/components/dashboard/PublicitySection";
 import { CommitteeSection } from "@/components/dashboard/CommitteeSection";
@@ -73,12 +64,10 @@ import { ProgramPagesSection } from "@/components/dashboard/ProgramPagesSection"
 import { TestimonialsSection } from "@/components/dashboard/TestimonialsSection";
 import { PageHeroesSection } from "@/components/dashboard/PageHeroesSection";
 
-const ACCENT = "var(--color-accent-1)";
-
 function Centered({ children }: { children: ReactNode }) {
   return (
-    <div className="grid min-h-screen place-items-center bg-[var(--color-background)] px-6 text-center">
-      <div className="text-muted-foreground">{children}</div>
+    <div className="dash-theme grid min-h-screen place-items-center px-6 text-center">
+      <div className="text-[#4B5E73]">{children}</div>
     </div>
   );
 }
@@ -96,7 +85,7 @@ function DashboardGateInner({ section, onPick }: { section: Section; onPick: (s:
   if (loading)
     return (
       <Centered>
-        <Loader2 className="mx-auto mb-3 animate-spin" size={28} />
+        <Loader2 className="mx-auto mb-3 animate-spin text-[#0369A1]" size={28} />
         <p className="text-sm">Loading…</p>
       </Centered>
     );
@@ -104,16 +93,29 @@ function DashboardGateInner({ section, onPick }: { section: Section; onPick: (s:
   if (!isAdmin)
     return (
       <Centered>
-        <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-red-500/10 text-red-500">
-          <Lock size={24} />
+        <div className="mx-auto max-w-sm rounded-[20px] border border-[#E1E9F2] bg-white px-8 py-10">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-[#FEECEC] text-[#DC2626]">
+            <Lock size={24} />
+          </div>
+          <p className="text-lg font-bold text-[#0B1B2B]">Access denied</p>
+          <p className="mt-2 text-sm leading-relaxed">
+            Signed in as {user.email}. Ask a site admin to grant your account the admin role.
+          </p>
         </div>
-        <p className="font-semibold text-foreground">Access denied</p>
-        <p className="mt-1 text-sm">
-          Signed in as {user.email}. Ask a site admin to grant your account the admin role.
-        </p>
       </Centered>
     );
   return <DashboardShell section={section} onPick={onPick} />;
+}
+
+function BrandMark({ size = 42 }: { size?: number }) {
+  return (
+    <div
+      className="grid shrink-0 place-items-center overflow-hidden rounded-full border-[3px] border-[#16A34A] bg-white"
+      style={{ width: size, height: size }}
+    >
+      <img src={logoPusab} alt="PUSAB" className="h-[78%] w-[78%] object-contain" />
+    </div>
+  );
 }
 
 function LoginScreen() {
@@ -137,72 +139,68 @@ function LoginScreen() {
   }
 
   return (
-    <div className="relative grid min-h-screen place-items-center overflow-hidden bg-[var(--color-background)] px-6">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[60vh] w-[60vh] -translate-x-1/2 rounded-full bg-[var(--color-accent-1)] opacity-[0.08] blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 h-80 w-80 rounded-full bg-[var(--color-accent-2)] opacity-[0.05] blur-[100px]" />
-
-      <form
-        onSubmit={submit}
-        className="relative w-full max-w-sm"
-      >
-        {/* Card */}
-        <div className="overflow-hidden rounded-3xl border border-border bg-[var(--color-surface)] shadow-[0_40px_100px_-50px_rgba(15,23,42,0.5)]">
-          {/* Top accent bar */}
-          <div className="h-1 w-full bg-[linear-gradient(90deg,var(--color-accent-1),var(--color-accent-2))]" />
-          <div className="p-8">
-            <div className="mb-6 flex items-center gap-3">
-              <img src={logoPusab} alt="PUSAB" className="h-11 w-11 object-contain" />
-              <div>
-                <p className="font-display text-xl font-bold tracking-tight leading-tight">PUSAB Admin</p>
-                <p className="text-xs text-muted-foreground">Dashboard</p>
+    <div className="dash-theme grid min-h-screen place-items-center px-6 py-10">
+      <form onSubmit={submit} className="w-full max-w-[400px]">
+        <div className="overflow-hidden rounded-[20px] border border-[#E1E9F2] bg-white shadow-[0_40px_80px_-40px_rgba(11,37,64,0.35)]">
+          <div className="relative overflow-hidden bg-[#0B2540] px-8 py-7 text-white">
+            <div
+              className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full border-[36px] border-[#0E3A63]"
+              aria-hidden="true"
+            />
+            <div className="relative flex items-center gap-3">
+              <BrandMark />
+              <div className="flex flex-col">
+                <span className="text-base font-extrabold tracking-[0.02em]">PUSAB</span>
+                <span className="text-[11px] tracking-[0.14em] text-[#8FAACB]">EST. 2014 · ADMIN</span>
               </div>
             </div>
+            <h1 className="relative mt-6 text-2xl font-extrabold tracking-[-0.02em]">Sign in to the dashboard</h1>
+            <p className="relative mt-1 text-sm text-[#C3D3E4]">Manage everything on pusab.net from one place.</p>
+          </div>
 
-            <div className="space-y-4">
-              <label className="block">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Email</span>
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-border bg-[var(--color-background)] px-3 py-2.5 text-sm outline-none transition focus:border-[var(--color-accent-1)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-accent-1)_20%,transparent)]"
-                  placeholder="you@example.com"
-                />
-              </label>
-              <label className="block">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Password</span>
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1.5 w-full rounded-xl border border-border bg-[var(--color-background)] px-3 py-2.5 text-sm outline-none transition focus:border-[var(--color-accent-1)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--color-accent-1)_20%,transparent)]"
-                  placeholder="••••••••"
-                />
-              </label>
-            </div>
+          <div className="space-y-4 px-8 py-7">
+            <label className="block">
+              <span className="text-[13px] font-semibold text-[#4B5E73]">Email</span>
+              <input
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className={inputCls + " h-11"}
+                placeholder="you@example.com"
+              />
+            </label>
+            <label className="block">
+              <span className="text-[13px] font-semibold text-[#4B5E73]">Password</span>
+              <input
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputCls + " h-11"}
+                placeholder="••••••••"
+              />
+            </label>
 
             {error && (
-              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900 dark:bg-red-950/40 dark:text-red-400">
+              <div role="alert" className="rounded-xl border border-[#FBD5D5] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]">
                 {error}
               </div>
             )}
 
             <button
               disabled={busy}
-              className="mt-6 w-full rounded-xl bg-[linear-gradient(120deg,var(--color-accent-1),var(--color-accent-2))] py-3 text-sm font-semibold text-white shadow-[0_12px_28px_-10px_rgba(29,78,216,0.7)] transition-opacity disabled:opacity-60"
+              className="mt-2 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#0369A1] text-sm font-semibold text-white transition-colors hover:bg-[#075985] disabled:opacity-60"
             >
+              {busy && <Loader2 size={16} className="animate-spin" />}
               {busy ? "Signing in…" : "Sign in"}
             </button>
           </div>
         </div>
 
-        <Link
-          to="/"
-          className="mt-4 block text-center text-xs text-muted-foreground hover:text-foreground transition-colors"
-        >
+        <Link to="/" className="mt-5 block text-center text-sm font-medium text-[#0369A1] hover:text-[#075985]">
           ← Back to site
         </Link>
       </form>
@@ -215,13 +213,13 @@ export const NAV = [
   { key: "page-heroes", label: "Page Heroes", Icon: GalleryHorizontal, group: "content" },
   { key: "moments", label: "Moments", Icon: ImageIcon, group: "content" },
   { key: "publicity", label: "Publicity", Icon: Newspaper, group: "content" },
-  { key: "executive-committee", label: "Executive Committee", Icon: ShieldCheck, group: "content" },
-  { key: "honor-board", label: "Honor Board", Icon: Crown, group: "content" },
-  { key: "convening-committee", label: "Convening Committee", Icon: Star, group: "content" },
   { key: "leadership-messages", label: "Leadership Messages", Icon: Quote, group: "content" },
   { key: "program-pages", label: "Program Pages", Icon: FileText, group: "content" },
   { key: "felicitation", label: "Felicitation", Icon: Award, group: "content" },
   { key: "testimonials", label: "Testimonials", Icon: MessageSquareQuote, group: "content" },
+  { key: "executive-committee", label: "Executive Committee", Icon: ShieldCheck, group: "people" },
+  { key: "convening-committee", label: "Convening Committee", Icon: Star, group: "people" },
+  { key: "honor-board", label: "Honor Board", Icon: Crown, group: "people" },
   { key: "messages", label: "Messages", Icon: MessageSquare, group: "system" },
   { key: "join-applications", label: "Join Applications", Icon: Users, group: "system" },
   { key: "users", label: "Users", Icon: UserCog, group: "system" },
@@ -238,9 +236,12 @@ export function isSection(value: string): value is Section {
 
 const GROUP_LABELS: Record<string, string> = {
   main: "",
-  content: "Content",
-  system: "System",
+  content: "Website content",
+  people: "People",
+  system: "Inbox & system",
 };
+
+type Badges = Partial<Record<Section, number>>;
 
 function NavList({
   section,
@@ -249,89 +250,130 @@ function NavList({
 }: {
   section: Section;
   onPick: (s: Section) => void;
-  badges?: Partial<Record<Section, number>>;
+  badges?: Badges;
 }) {
-  let lastGroup = "";
+  const groups = Object.keys(GROUP_LABELS);
   return (
-    <nav className="space-y-0.5 px-2">
-      {NAV.map(({ key, label, Icon, group }) => {
-        const isNewGroup = group !== lastGroup;
-        const showLabel = isNewGroup && GROUP_LABELS[group];
-        lastGroup = group;
-        const badge = badges?.[key];
-        const active = section === key;
+    <div className="flex flex-col gap-6">
+      {groups.map((group) => {
+        const items = NAV.filter((n) => n.group === group);
         return (
-          <div key={key}>
-            {showLabel && (
-              <div className="flex items-center gap-2 mb-1 mt-5 px-2">
-                <span className="text-[9px] font-black uppercase tracking-[0.22em] text-muted-foreground/40">
-                  {GROUP_LABELS[group]}
-                </span>
-                <div className="flex-1 h-px bg-border/50" />
-              </div>
-            )}
-            <button
-              onClick={() => onPick(key)}
-              className={
-                "group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-150 " +
-                (active
-                  ? "bg-[linear-gradient(120deg,var(--color-accent-1),var(--color-accent-2))] text-white shadow-lg shadow-[color-mix(in_oklab,var(--color-accent-1)_35%,transparent)]"
-                  : "text-foreground/60 hover:bg-[color-mix(in_oklab,var(--color-accent-1)_6%,var(--color-background))] hover:text-foreground")
-              }
-            >
-              {/* Active indicator bar */}
-              {active && (
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-r-full bg-white/50" />
-              )}
-              <span className={
-                "grid h-7 w-7 shrink-0 place-items-center rounded-lg transition-all " +
-                (active
-                  ? "bg-white/20"
-                  : "bg-[color-mix(in_oklab,var(--color-accent-1)_8%,transparent)] group-hover:bg-[color-mix(in_oklab,var(--color-accent-1)_14%,transparent)]")
-              }>
-                <Icon size={14} className="shrink-0" />
+          <div key={group} className="flex flex-col gap-0.5">
+            {GROUP_LABELS[group] && (
+              <span className="px-3 pb-1.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#8FAACB]">
+                {GROUP_LABELS[group]}
               </span>
-              <span className="flex-1 text-left text-[13px]">{label}</span>
-              {badge ? (
-                <span className={
-                  "rounded-full px-2 py-0.5 text-[10px] font-bold tabular-nums " +
-                  (active
-                    ? "bg-white/25 text-white"
-                    : "bg-[var(--color-accent-1)] text-white")
-                }>
-                  {badge}
-                </span>
-              ) : null}
-            </button>
+            )}
+            {items.map(({ key, label, Icon }) => {
+              const active = section === key;
+              const badge = badges?.[key];
+              const highlight = key === "messages";
+              return (
+                <button
+                  key={key}
+                  onClick={() => onPick(key)}
+                  aria-current={active ? "page" : undefined}
+                  className={
+                    "group flex w-full items-center gap-3 rounded-[10px] px-3 py-2.5 text-left text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#38BDF8] " +
+                    (active
+                      ? "bg-[#0369A1] font-semibold text-white"
+                      : "text-[#C3D3E4] hover:bg-[#102F50] hover:text-white")
+                  }
+                >
+                  <Icon
+                    size={17}
+                    strokeWidth={active ? 2.2 : 1.8}
+                    className={"shrink-0 " + (active ? "text-white" : "text-[#8FAACB] group-hover:text-[#C3D3E4]")}
+                  />
+                  <span className="min-w-0 flex-1 truncate">{label}</span>
+                  {badge ? (
+                    <span
+                      className={
+                        "rounded-full px-2 py-px text-xs tabular-nums " +
+                        (active
+                          ? "bg-white/20 text-white"
+                          : highlight
+                            ? "bg-[#0EA5E9] font-semibold text-[#04203A]"
+                            : "bg-[#16385C] text-[#C3D3E4]")
+                      }
+                    >
+                      {badge}
+                    </span>
+                  ) : null}
+                </button>
+              );
+            })}
           </div>
         );
       })}
-    </nav>
+    </div>
   );
 }
 
 function UserFooter({ email, onSignOut }: { email: string; onSignOut: () => void }) {
   const initials = email.slice(0, 2).toUpperCase();
   return (
-    <div className="mx-2 rounded-2xl border border-border/60 bg-[var(--color-background)] p-3">
-      <div className="flex items-center gap-3">
-        <div className="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[linear-gradient(135deg,var(--color-accent-1),var(--color-accent-2))] text-xs font-bold text-white shadow-md">
-          {initials}
-          <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-[var(--color-background)] bg-emerald-500" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-semibold leading-tight text-foreground">{email}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">Administrator</p>
-        </div>
-        <button
-          onClick={onSignOut}
-          title="Sign out"
-          className="grid h-7 w-7 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-red-500/10 hover:text-red-500"
-        >
-          <LogOut size={13} />
-        </button>
+    <div className="flex items-center gap-3 rounded-xl bg-[#102F50] p-3">
+      <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#38BDF8] text-[13px] font-extrabold text-[#0B2540]">
+        {initials}
       </div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <span className="truncate text-[13px] font-semibold text-white">{email}</span>
+        <span className="text-xs text-[#8FAACB]">Administrator</span>
+      </div>
+      <button
+        type="button"
+        onClick={onSignOut}
+        aria-label="Sign out"
+        title="Sign out"
+        className="grid h-11 w-11 shrink-0 place-items-center rounded-[10px] text-[#C3D3E4] transition-colors hover:bg-[#16385C] hover:text-white"
+      >
+        <LogOut size={18} strokeWidth={1.8} />
+      </button>
     </div>
+  );
+}
+
+function Sidebar({
+  section,
+  onPick,
+  badges,
+  email,
+  onSignOut,
+  onClose,
+}: {
+  section: Section;
+  onPick: (s: Section) => void;
+  badges: Badges;
+  email: string;
+  onSignOut: () => void;
+  onClose?: () => void;
+}) {
+  return (
+    <nav aria-label="Dashboard" className="flex h-full flex-col gap-6 bg-[#0B2540] px-4 py-6 text-sm text-[#C3D3E4]">
+      <div className="flex items-center gap-3 border-b border-[#16385C] px-2 pb-[18px]">
+        <BrandMark />
+        <div className="flex min-w-0 flex-1 flex-col">
+          <span className="text-base font-extrabold tracking-[0.02em] text-white">PUSAB</span>
+          <span className="text-[11px] tracking-[0.14em] text-[#8FAACB]">EST. 2014 · ADMIN</span>
+        </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            aria-label="Close menu"
+            className="grid h-10 w-10 place-items-center rounded-[10px] text-[#C3D3E4] hover:bg-[#102F50] hover:text-white"
+          >
+            <X size={18} />
+          </button>
+        )}
+      </div>
+
+      <div className="dash-scroll -mx-1 flex-1 overflow-y-auto px-1">
+        <NavList section={section} onPick={onPick} badges={badges} />
+      </div>
+
+      <UserFooter email={email} onSignOut={onSignOut} />
+    </nav>
   );
 }
 
@@ -340,6 +382,7 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
   const [drawer, setDrawer] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [unread, setUnread] = useState(0);
+  const [counts, setCounts] = useState<{ moments?: number; publicity?: number }>({});
   const active = NAV.find((n) => n.key === section)!;
   const email = user?.email ?? "";
 
@@ -349,8 +392,13 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
       .listAll({})
       .then((msgs) => alive && setUnread(msgs.filter((m) => !m.is_read).length))
       .catch(() => {});
+    Promise.all([galleryApi.listAll(), publicityApi.listAll()])
+      .then(([m, p]) => alive && setCounts({ moments: m.length, publicity: p.length }))
+      .catch(() => {});
     return () => { alive = false; };
   }, [section]);
+
+  const badges: Badges = { messages: unread, moments: counts.moments, publicity: counts.publicity };
 
   const pick = (s: Section) => {
     setDrawer(false);
@@ -358,34 +406,14 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
   };
 
   return (
-    <div className="flex min-h-screen bg-[var(--color-background)]">
+    <div className="dash-theme flex min-h-screen">
       {/* ── Desktop sidebar ───────────────────────────────────── */}
       <aside
         className={
-          "sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-border/70 bg-[var(--color-surface)] " +
-          (sidebarOpen ? "lg:flex" : "lg:hidden")
+          "sticky top-0 hidden h-screen w-64 shrink-0 " + (sidebarOpen ? "lg:block" : "lg:hidden")
         }
-        style={{ background: "color-mix(in oklab, var(--color-surface) 97%, var(--color-accent-1))" }}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-3 px-5 py-5 border-b border-border/50">
-          <div className="relative">
-            <img src={logoPusab} alt="PUSAB" className="h-9 w-9 object-contain drop-shadow-sm" />
-            <span className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 border-2 border-[var(--color-surface)]" />
-          </div>
-          <div>
-            <span className="font-display text-[15px] font-extrabold tracking-tight leading-tight block">PUSAB</span>
-            <span className="text-[10px] text-muted-foreground/70 leading-none font-medium tracking-wide">Admin Dashboard</span>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto py-3 scrollbar-thin">
-          <NavList section={section} onPick={pick} badges={{ messages: unread }} />
-        </div>
-
-        <div className="border-t border-border/50 py-3">
-          <UserFooter email={email} onSignOut={signOut} />
-        </div>
+        <Sidebar section={section} onPick={pick} badges={badges} email={email} onSignOut={signOut} />
       </aside>
 
       {/* ── Mobile drawer ─────────────────────────────────────── */}
@@ -396,7 +424,7 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setDrawer(false)}
-            className="fixed inset-0 z-[120] bg-slate-950/50 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[120] bg-[#0B2540]/50 backdrop-blur-[2px] lg:hidden"
           >
             <motion.aside
               initial={{ x: -300 }}
@@ -404,30 +432,16 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
               exit={{ x: -300 }}
               transition={{ type: "spring", stiffness: 320, damping: 34 }}
               onClick={(e) => e.stopPropagation()}
-              className="flex h-full w-72 flex-col border-r border-border/70 bg-[var(--color-surface)]"
-              style={{ background: "color-mix(in oklab, var(--color-surface) 97%, var(--color-accent-1))" }}
+              className="h-full w-72 max-w-[85vw]"
             >
-              <div className="flex items-center justify-between px-5 py-5 border-b border-border/50">
-                <div className="flex items-center gap-3">
-                  <img src={logoPusab} alt="PUSAB" className="h-9 w-9 object-contain" />
-                  <div>
-                    <span className="font-display text-[15px] font-extrabold tracking-tight leading-tight block">PUSAB</span>
-                    <span className="text-[10px] text-muted-foreground/70 leading-none">Admin Dashboard</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setDrawer(false)}
-                  className="grid h-8 w-8 place-items-center rounded-xl border border-border text-muted-foreground hover:text-foreground"
-                >
-                  <X size={15} />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto py-3">
-                <NavList section={section} onPick={pick} badges={{ messages: unread }} />
-              </div>
-              <div className="border-t border-border/50 py-3">
-                <UserFooter email={email} onSignOut={signOut} />
-              </div>
+              <Sidebar
+                section={section}
+                onPick={pick}
+                badges={badges}
+                email={email}
+                onSignOut={signOut}
+                onClose={() => setDrawer(false)}
+              />
             </motion.aside>
           </motion.div>
         )}
@@ -435,41 +449,47 @@ function DashboardShell({ section, onPick }: { section: Section; onPick: (s: Sec
 
       {/* ── Main content ──────────────────────────────────────── */}
       <div className="flex min-w-0 flex-1 flex-col">
-        {/* Topbar */}
-        <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-[color-mix(in_oklab,var(--color-background)_88%,transparent)] px-5 py-3.5 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setDrawer(true)}
-              className="grid h-9 w-9 place-items-center rounded-xl border border-border text-foreground/70 transition-colors hover:text-foreground lg:hidden"
-            >
-              <Menu size={17} />
-            </button>
-            <button
-              onClick={() => setSidebarOpen((v) => !v)}
-              className="hidden h-9 w-9 items-center justify-center rounded-xl border border-border text-foreground/70 transition-colors hover:text-foreground lg:grid"
-              title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
-            >
-              {sidebarOpen ? <PanelLeftClose size={17} /> : <PanelLeftOpen size={17} />}
-            </button>
-            <div className="flex items-center gap-2.5">
-              <active.Icon size={18} className="text-[var(--color-accent-1)]" />
-              <h1 className="font-display text-lg font-bold tracking-tight">{active.label}</h1>
+        <header className="sticky top-0 z-20 border-b border-[#E1E9F2] bg-[#F3F7FB]/85 backdrop-blur-md">
+          <div className="mx-auto flex h-16 max-w-[1240px] items-center justify-between gap-4 px-5 sm:px-9">
+            <div className="flex min-w-0 items-center gap-3">
+              <button
+                onClick={() => setDrawer(true)}
+                aria-label="Open menu"
+                className="grid h-10 w-10 place-items-center rounded-full border border-[#E1E9F2] bg-white text-[#0B1B2B] lg:hidden"
+              >
+                <Menu size={18} />
+              </button>
+              <button
+                onClick={() => setSidebarOpen((v) => !v)}
+                aria-label={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+                className="hidden h-10 w-10 place-items-center rounded-full border border-[#E1E9F2] bg-white text-[#4B5E73] transition-colors hover:text-[#0B1B2B] lg:grid"
+              >
+                {sidebarOpen ? <PanelLeftClose size={17} /> : <PanelLeftOpen size={17} />}
+              </button>
+              <nav aria-label="Breadcrumb" className="flex min-w-0 items-center gap-1.5 text-sm">
+                <button
+                  onClick={() => pick("overview")}
+                  className="hidden text-[#4B5E73] hover:text-[#0369A1] sm:inline"
+                >
+                  Dashboard
+                </button>
+                <ChevronRight size={14} className="hidden shrink-0 text-[#8A9BB0] sm:block" />
+                <span className="truncate font-semibold text-[#0B1B2B]">{active.label}</span>
+              </nav>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
             <Link
               to="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground/70 transition-colors hover:border-[var(--color-accent-1)] hover:text-foreground"
+              className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border border-[#D5E1EE] bg-white px-4 text-sm font-semibold text-[#0B1B2B] transition-colors hover:border-[#0369A1] hover:text-[#0369A1]"
             >
-              View site <ExternalLink size={11} />
+              View site <ExternalLink size={14} />
             </Link>
-
           </div>
         </header>
 
-        <main className="flex-1 p-5 sm:p-7">
+        <main className="mx-auto w-full max-w-[1240px] flex-1 px-5 pb-12 pt-6 sm:px-9">
           {section === "overview" && <Overview onJump={pick} />}
           {section === "page-heroes" && <PageHeroesSection />}
           {section === "moments" && <MomentsSection />}
@@ -498,25 +518,102 @@ interface OverviewData {
   committee: { count: number; current: number; sessions: number };
 }
 
-const CHART_COLORS = {
-  blue: "var(--color-chart-2)",
-  green: "var(--color-chart-3)",
-  amber: "var(--color-chart-4)",
-  pink: "var(--color-chart-5)",
-};
+const SKY = "#0EA5E9";
+const SKY_DEEP = "#0369A1";
 
 function monthKey(iso: string) {
   const d = new Date(iso);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-function monthLabel(key: string) {
+function monthLabel(key: string, withYear: boolean) {
   const [y, m] = key.split("-").map(Number);
-  return new Date(y, m - 1, 1).toLocaleDateString("en-GB", { month: "short", year: "2-digit" });
+  return new Date(y, m - 1, 1).toLocaleDateString(
+    "en-GB",
+    withYear ? { month: "short", year: "2-digit" } : { month: "short" },
+  );
+}
+
+const QUICK_ACTIONS = [
+  { key: "moments", label: "Upload photos to Moments", Icon: ImageIcon },
+  { key: "publicity", label: "Write a publicity post", Icon: Newspaper },
+  { key: "executive-committee", label: "Add committee member", Icon: Users },
+  { key: "page-heroes", label: "Edit homepage hero", Icon: GalleryHorizontal },
+] as const;
+
+function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <section className={"min-w-0 rounded-2xl border border-[#E1E9F2] bg-white p-6 " + className}>
+      {children}
+    </section>
+  );
+}
+
+function CreateMenu({ onJump }: { onJump: (s: Section) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        className="inline-flex h-[46px] items-center gap-2 rounded-full bg-[#0EA5E9] px-5 text-sm font-bold text-[#04203A] transition-colors hover:bg-[#38BDF8]"
+      >
+        <Plus size={16} strokeWidth={2.6} /> Create new
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            role="menu"
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 top-[calc(100%+8px)] z-30 w-64 rounded-2xl border border-[#E1E9F2] bg-white p-1.5 text-[#0B1B2B] shadow-[0_24px_48px_-16px_rgba(11,37,64,0.35)]"
+          >
+            {QUICK_ACTIONS.map(({ key, label, Icon }) => (
+              <button
+                key={key}
+                role="menuitem"
+                onClick={() => {
+                  setOpen(false);
+                  onJump(key);
+                }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-colors hover:bg-[#F0F7FD]"
+              >
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-[#EEF4FA] text-[#0369A1]">
+                  <Icon size={15} />
+                </span>
+                {label}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function Overview({ onJump }: { onJump: (s: Section) => void }) {
   const [data, setData] = useState<OverviewData | null>(null);
+  const [range, setRange] = useState<6 | 12>(6);
 
   useEffect(() => {
     let alive = true;
@@ -553,7 +650,7 @@ function Overview({ onJump }: { onJump: (s: Section) => void }) {
         })),
       ]
         .sort((a, b) => +new Date(b.at) - +new Date(a.at))
-        .slice(0, 8)
+        .slice(0, 6)
     : [];
 
   const loading = data === null;
@@ -561,26 +658,27 @@ function Overview({ onJump }: { onJump: (s: Section) => void }) {
   const hour = now.getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
-  // Content added per month, last 6 months — moments + publicity.
+  // Content added per month — moments + publicity.
   const activityTrend = useMemo(() => {
     if (!data) return [];
     const months: string[] = [];
-    const cursor = new Date(now.getFullYear(), now.getMonth(), 1);
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(cursor.getFullYear(), cursor.getMonth() - i, 1);
+    for (let i = range - 1; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
     }
     const buckets = new Map(months.map((m) => [m, { moments: 0, publicity: 0 }]));
     for (const m of data.moments) {
-      const k = monthKey(m.created_at);
-      if (buckets.has(k)) buckets.get(k)!.moments++;
+      const b = buckets.get(monthKey(m.created_at));
+      if (b) b.moments++;
     }
     for (const p of data.publicity) {
-      const k = monthKey(p.created_at);
-      if (buckets.has(k)) buckets.get(k)!.publicity++;
+      const b = buckets.get(monthKey(p.created_at));
+      if (b) b.publicity++;
     }
-    return months.map((m) => ({ month: monthLabel(m), ...buckets.get(m)! }));
-  }, [data, now]);
+    return months.map((m) => ({ month: monthLabel(m, range === 12), ...buckets.get(m)! }));
+  }, [data, now, range]);
+
+  const periodTotal = activityTrend.reduce((n, m) => n + m.moments + m.publicity, 0);
 
   const committeeByYear = useMemo(() => {
     if (!data) return [];
@@ -592,20 +690,14 @@ function Overview({ onJump }: { onJump: (s: Section) => void }) {
       .map(([year, count]) => ({ year: String(year), members: count }));
   }, [data]);
 
-  const contentMixConfig: ChartConfig = {
-    moments: { label: "Photos", color: CHART_COLORS.blue },
-    publicity: { label: "Publicity", color: CHART_COLORS.green },
+  const activityConfig: ChartConfig = {
+    moments: { label: "Photos", color: SKY },
+    publicity: { label: "Publicity", color: SKY_DEEP },
   };
 
   const committeeConfig: ChartConfig = {
-    members: { label: "Members", color: CHART_COLORS.blue },
+    members: { label: "Members", color: SKY },
   };
-
-  const quickActions = [
-    { key: "moments", label: "Add a photo", Icon: ImageIcon, desc: "Upload to gallery" },
-    { key: "publicity", label: "Write a post", Icon: Newspaper, desc: "Create publicity post" },
-    { key: "executive-committee", label: "Add a member", Icon: Users, desc: "Update committee" },
-  ] as const;
 
   const sitePages = [
     { label: "Leadership", to: "/leadership" },
@@ -615,173 +707,209 @@ function Overview({ onJump }: { onJump: (s: Section) => void }) {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Slim greeting header */}
-      <div className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: ACCENT }}>{greeting}</p>
-          <h2 className="font-display text-2xl font-extrabold tracking-tight mt-1 md:text-[28px]">Welcome back</h2>
+    <div className="flex flex-col gap-[22px]">
+      {/* Welcome banner */}
+      <div className="relative flex flex-wrap items-center gap-5 overflow-hidden rounded-[20px] bg-[#0B2540] px-6 py-7 text-white sm:px-8">
+        <div
+          className="pointer-events-none absolute -right-[60px] -top-20 h-[280px] w-[280px] rounded-full border-[40px] border-[#0E3A63]"
+          aria-hidden="true"
+        />
+        <div className="relative flex min-w-0 flex-[1_1_360px] flex-col gap-2">
+          <span className="inline-flex items-center gap-2 self-start rounded-full bg-[#123A61] px-3 py-1 text-xs text-[#CFE3F5]">
+            <span className="h-[7px] w-[7px] rounded-full bg-[#38BDF8]" />
+            {now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          </span>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.02em] sm:text-[30px]">{greeting}, Admin</h1>
+          <p className="text-[15px] text-[#C3D3E4]">
+            Keep Bishwambarpur’s story fresh — here’s the state of pusab.net.
+          </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-        </p>
+        <div className="relative flex flex-wrap gap-2.5">
+          <Link
+            to="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex h-[46px] items-center gap-1.5 rounded-full border border-[#3B5E83] px-[18px] text-sm font-semibold text-white transition-colors hover:border-[#8FAACB] hover:bg-white/5"
+          >
+            View site <ArrowUpRight size={15} />
+          </Link>
+          <CreateMenu onJump={onJump} />
+        </div>
       </div>
 
-      {/* Stat row — 3 equal cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Photos" icon={<ImageIcon size={16} />}
+      {/* Stat row */}
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+        <StatCard label="Photos" tone="sky"
           value={loading ? "—" : data!.moments.length}
           sub="In the Moments gallery" onClick={() => onJump("moments")} />
-        <StatCard label="Publicity Posts" icon={<Newspaper size={16} />}
+        <StatCard label="Publicity posts" tone="green"
           value={loading ? "—" : pub.length}
           sub={loading ? "" : `${published} published · ${pub.length - published} drafts`}
           onClick={() => onJump("publicity")} />
-        <StatCard label="Committee" icon={<Users size={16} />}
+        <StatCard label="Committee" tone="red"
           value={loading ? "—" : data!.committee.count}
-          sub={loading ? "" : `${data!.committee.sessions} sessions · ${data!.committee.current} current`}
-          onClick={() => onJump("executive-committee")} accent />
-      </div>
-
-      {/* Content activity over time */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-[var(--color-surface)] p-5">
-        <div className="mb-1 flex items-center justify-between gap-4">
-          <div>
-            <h3 className="font-display text-sm font-bold">Content activity</h3>
-            <p className="mt-0.5 text-xs text-muted-foreground">New items added, last 6 months</p>
-          </div>
-          <TrendingUp size={16} className="text-muted-foreground/50" />
-        </div>
-        {loading ? (
-          <div className="mt-4 h-[220px] animate-pulse rounded-xl bg-[var(--color-background)]" />
-        ) : activityTrend.every((m) => m.moments + m.publicity === 0) ? (
-          <p className="py-16 text-center text-sm text-muted-foreground">No activity in this period yet.</p>
-        ) : (
-          <ChartContainer config={contentMixConfig} className="mt-2 aspect-auto h-[220px] w-full">
-            <AreaChart data={activityTrend} margin={{ left: -20, right: 8, top: 8 }}>
-              <defs>
-                <linearGradient id="fillMoments" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={CHART_COLORS.blue} stopOpacity={0.28} />
-                  <stop offset="95%" stopColor={CHART_COLORS.blue} stopOpacity={0.02} />
-                </linearGradient>
-                <linearGradient id="fillPublicity" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={CHART_COLORS.green} stopOpacity={0.28} />
-                  <stop offset="95%" stopColor={CHART_COLORS.green} stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid vertical={false} strokeDasharray="0" stroke="var(--color-border)" />
-              <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} fontSize={11} />
-              <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={11} allowDecimals={false} width={28} />
-              <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
-              <Area dataKey="moments" type="monotone" fill="url(#fillMoments)" stroke={CHART_COLORS.blue} strokeWidth={2} stackId="a" />
-              <Area dataKey="publicity" type="monotone" fill="url(#fillPublicity)" stroke={CHART_COLORS.green} strokeWidth={2} stackId="a" />
-              <ChartLegend content={<ChartLegendContent />} />
-            </AreaChart>
-          </ChartContainer>
-        )}
-      </div>
-
-      {/* Committee growth */}
-      {!loading && committeeByYear.length > 1 && (
-        <div className="overflow-hidden rounded-2xl border border-border bg-[var(--color-surface)] p-5">
-          <h3 className="font-display text-sm font-bold">Committee members by session</h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">Headcount across the most recent sessions</p>
-          <ChartContainer config={committeeConfig} className="mt-2 aspect-auto h-[180px] w-full">
-            <BarChart data={committeeByYear} margin={{ left: -20, right: 8, top: 8 }}>
-              <CartesianGrid vertical={false} strokeDasharray="0" stroke="var(--color-border)" />
-              <XAxis dataKey="year" tickLine={false} axisLine={false} tickMargin={8} fontSize={11} />
-              <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={11} allowDecimals={false} width={28} />
-              <ChartTooltip content={<ChartTooltipContent indicator="dot" />} />
-              <Bar dataKey="members" fill={CHART_COLORS.blue} radius={[4, 4, 0, 0]} maxBarSize={40} />
-            </BarChart>
-          </ChartContainer>
-        </div>
-      )}
-
-      {/* Bottom: activity feed + sidebar */}
-      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-        {/* Recent activity */}
-        <div className="overflow-hidden rounded-2xl border border-border bg-[var(--color-surface)]">
-          <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
-            <h3 className="font-display text-sm font-bold">Recent activity</h3>
-            <span className="rounded-full border border-border px-2 py-0.5 text-[11px] text-muted-foreground tabular-nums">{recent.length}</span>
-          </div>
-          {loading ? (
-            <div className="space-y-1 p-3">
-              {[0,1,2,3,4].map((i) => (
-                <div key={i} className="h-14 animate-pulse rounded-xl bg-[var(--color-background)]" style={{ animationDelay: `${i*60}ms` }} />
-              ))}
-            </div>
-          ) : recent.length === 0 ? (
-            <p className="py-16 text-center text-sm text-muted-foreground">Nothing yet.</p>
-          ) : (
-            <ul>
-              {recent.map((r) => (
-                <li key={r.id}
-                  className="group flex cursor-pointer items-center gap-3 px-5 py-3 transition-colors hover:bg-[color-mix(in_oklab,var(--color-accent-1)_5%,transparent)] border-b border-border last:border-0"
-                  onClick={() => onJump(r.section)}
-                >
-                  <div className="h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-[var(--color-background)] border border-border">
-                    {r.image ? <img src={r.image} alt="" className="h-full w-full object-cover" /> : (
-                      <div className="grid h-full w-full place-items-center text-muted-foreground/30">
-                        <ImageIcon size={14} />
-                      </div>
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-semibold leading-tight">{r.title}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      <span className="font-bold" style={{ color: ACCENT }}>{r.kind}</span>
-                      {" · "}
-                      {new Date(r.at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
-                    </p>
-                  </div>
-                  <ArrowUpRight size={13} className="shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </li>
-              ))}
-            </ul>
+          sub={loading ? "" : (
+            <>
+              {data!.committee.sessions} sessions · <strong className="text-[#0B1B2B]">{data!.committee.current} current</strong>
+            </>
           )}
-        </div>
+          onClick={() => onJump("executive-committee")} />
+      </div>
 
-        {/* Sidebar */}
-        <div className="flex flex-col gap-5">
-          {/* Quick actions */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-[var(--color-surface)]">
-            <div className="border-b border-border px-5 py-4">
-              <h3 className="font-display text-sm font-bold">Quick actions</h3>
+      {/* Activity chart + quick actions */}
+      <div className="flex flex-wrap gap-4">
+        <Card className="flex flex-[2_1_460px] flex-col gap-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-[17px] font-bold">Content activity</h2>
+              <span className="text-[13px] text-[#4B5E73]">
+                New items added, last {range === 6 ? "6 months" : "12 months"}
+                {!loading && <> · <strong className="text-[#0B1B2B]">{periodTotal}</strong> total</>}
+              </span>
             </div>
-            <div className="p-2 space-y-0.5">
-              {quickActions.map(({ key, label, Icon, desc }) => (
-                <button key={key} onClick={() => onJump(key)}
-                  className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all hover:bg-[color-mix(in_oklab,var(--color-accent-1)_6%,transparent)]"
+            <div role="group" aria-label="Range" className="flex gap-1 rounded-full bg-[#EEF4FA] p-1">
+              {([6, 12] as const).map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  aria-pressed={range === r}
+                  onClick={() => setRange(r)}
+                  className={
+                    "h-8 rounded-full px-3.5 text-[13px] transition-colors " +
+                    (range === r ? "bg-[#0369A1] font-semibold text-white" : "text-[#4B5E73] hover:text-[#0B1B2B]")
+                  }
                 >
-                  <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-[var(--color-background)] text-muted-foreground transition-colors group-hover:border-[color-mix(in_oklab,var(--color-accent-1)_40%,transparent)] group-hover:text-[var(--color-accent-1)]">
-                    <Icon size={14} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold leading-tight">{label}</p>
-                    <p className="text-[11px] text-muted-foreground">{desc}</p>
-                  </div>
-                  <Plus size={13} className="shrink-0 text-muted-foreground/40 group-hover:text-[var(--color-accent-1)] transition-colors" />
+                  {r === 6 ? "6 months" : "1 year"}
                 </button>
               ))}
             </div>
           </div>
+          {loading ? (
+            <div className="h-[220px] animate-pulse rounded-xl bg-[#F0F7FD]" />
+          ) : periodTotal === 0 ? (
+            <p className="grid h-[220px] place-items-center text-sm text-[#4B5E73]">No activity in this period yet.</p>
+          ) : (
+            <>
+              <ChartContainer config={activityConfig} className="aspect-auto h-[220px] w-full">
+                <BarChart data={activityTrend} margin={{ left: -20, right: 4, top: 8 }} barCategoryGap="22%">
+                  <CartesianGrid vertical={false} stroke="#E1E9F2" />
+                  <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={10} fontSize={12} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={8} fontSize={12} allowDecimals={false} width={32} />
+                  <ChartTooltip cursor={{ fill: "#F0F7FD" }} content={<ChartTooltipContent indicator="dot" />} />
+                  <Bar dataKey="moments" stackId="a" fill={SKY} radius={[0, 0, 2, 2]} maxBarSize={56} />
+                  <Bar dataKey="publicity" stackId="a" fill={SKY_DEEP} radius={[10, 10, 0, 0]} maxBarSize={56} />
+                </BarChart>
+              </ChartContainer>
+              <div className="flex gap-5 text-[13px] text-[#4B5E73]">
+                <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#0EA5E9]" />Photos</span>
+                <span className="inline-flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-[#0369A1]" />Publicity</span>
+              </div>
+            </>
+          )}
+        </Card>
 
-          {/* Site links */}
-          <div className="overflow-hidden rounded-2xl border border-border bg-[var(--color-surface)]">
-            <div className="border-b border-border px-5 py-3.5">
-              <h3 className="font-display text-sm font-bold">View site pages</h3>
+        <Card className="flex flex-[1_1_280px] flex-col gap-2.5">
+          <h2 className="mb-1 text-[17px] font-bold">Quick actions</h2>
+          {QUICK_ACTIONS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => onJump(key)}
+              className="group flex items-center justify-between rounded-xl bg-[#F0F7FD] px-4 py-3.5 text-left text-sm font-semibold text-[#0B1B2B] transition-colors hover:bg-[#E1EEF9]"
+            >
+              {label}
+              <ArrowRight size={16} className="shrink-0 text-[#0369A1] transition-transform group-hover:translate-x-0.5" />
+            </button>
+          ))}
+        </Card>
+      </div>
+
+      {/* Recent activity + committee */}
+      <div className="flex flex-wrap gap-4">
+        <section className="min-w-0 flex-[2_1_460px] overflow-hidden rounded-2xl border border-[#E1E9F2] bg-white">
+          <div className="flex items-center justify-between gap-4 px-6 pb-3 pt-6">
+            <div>
+              <h2 className="text-[17px] font-bold">Recent activity</h2>
+              <span className="text-[13px] text-[#4B5E73]">Latest photos and posts</span>
             </div>
-            <div className="divide-y divide-border">
+          </div>
+          {loading ? (
+            <div className="space-y-2 px-6 pb-6">
+              {[0, 1, 2, 3].map((i) => (
+                <div key={i} className="h-14 animate-pulse rounded-xl bg-[#F0F7FD]" style={{ animationDelay: `${i * 60}ms` }} />
+              ))}
+            </div>
+          ) : recent.length === 0 ? (
+            <p className="px-6 pb-10 pt-6 text-center text-sm text-[#4B5E73]">Nothing yet.</p>
+          ) : (
+            <ul className="px-3 pb-3">
+              {recent.map((r) => (
+                <li key={r.id}>
+                  <button
+                    onClick={() => onJump(r.section)}
+                    className="group flex w-full items-center gap-3.5 rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-[#F0F7FD]"
+                  >
+                    <div className="h-11 w-11 shrink-0 overflow-hidden rounded-[10px] bg-[#EEF4FA]">
+                      {r.image ? (
+                        <img src={r.image} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center text-[#8FAACB]">
+                          <ImageIcon size={16} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-[#0B1B2B]">{r.title}</p>
+                      <p className="mt-0.5 text-xs text-[#4B5E73]">
+                        {new Date(r.at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                      </p>
+                    </div>
+                    <span
+                      className={
+                        "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold " +
+                        (r.kind === "Moment" ? "bg-[#E0F2FE] text-[#0369A1]" : "bg-[#DCFCE7] text-[#15803D]")
+                      }
+                    >
+                      {r.kind}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <div className="flex min-w-0 flex-[1_1_280px] flex-col gap-4">
+          {!loading && committeeByYear.length > 1 && (
+            <Card>
+              <h2 className="text-[17px] font-bold">Committee by session</h2>
+              <span className="text-[13px] text-[#4B5E73]">Members in recent sessions</span>
+              <ChartContainer config={committeeConfig} className="mt-3 aspect-auto h-[160px] w-full">
+                <BarChart data={committeeByYear} margin={{ left: -24, right: 4, top: 8 }}>
+                  <CartesianGrid vertical={false} stroke="#E1E9F2" />
+                  <XAxis dataKey="year" tickLine={false} axisLine={false} tickMargin={8} fontSize={11} />
+                  <YAxis tickLine={false} axisLine={false} tickMargin={6} fontSize={11} allowDecimals={false} width={30} />
+                  <ChartTooltip cursor={{ fill: "#F0F7FD" }} content={<ChartTooltipContent indicator="dot" />} />
+                  <Bar dataKey="members" fill={SKY} radius={[8, 8, 2, 2]} maxBarSize={32} />
+                </BarChart>
+              </ChartContainer>
+            </Card>
+          )}
+
+          <Card className="p-0">
+            <h2 className="px-6 pb-2 pt-5 text-[17px] font-bold">View site pages</h2>
+            <div className="px-3 pb-3">
               {sitePages.map(({ label, to }) => (
-                <Link key={to} to={to} target="_blank"
-                  className="flex items-center justify-between gap-2 px-5 py-3 text-sm font-medium text-foreground/70 transition-colors hover:bg-[color-mix(in_oklab,var(--color-accent-1)_5%,transparent)] hover:text-foreground"
+                <Link
+                  key={to}
+                  to={to}
+                  target="_blank"
+                  className="flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-[#0B1B2B] transition-colors hover:bg-[#F0F7FD] hover:text-[#0369A1]"
                 >
-                  {label} <ExternalLink size={11} className="text-muted-foreground/50" />
+                  {label} <ExternalLink size={14} className="text-[#8FAACB]" />
                 </Link>
               ))}
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
