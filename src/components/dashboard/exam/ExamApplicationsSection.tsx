@@ -10,7 +10,7 @@ import {
   type ExamStats,
   type ExamStatus,
 } from "@/lib/api";
-import { CLASS_OPTIONS, PAYMENT_LABELS, UNIONS, toBn, useExamConfig } from "@/lib/exam";
+import { CLASS_OPTIONS, PAYMENT_LABELS, UNIONS, serialLabel, toBn, useExamConfig } from "@/lib/exam";
 import { Field, Modal, inputCls, useConfirm } from "@/components/dashboard/primitives";
 import {
   ExamPageTitle,
@@ -431,7 +431,7 @@ function DetailDrawer({
           {app.sender_number && <Line label="পাঠানো নম্বর"><span className="font-inter">{app.sender_number}</span></Line>}
           {app.trx_id && <Line label="Transaction ID"><span className="font-inter font-bold">{app.trx_id}</span></Line>}
           <Line label="পরিমাণ">{taka(app.amount)}</Line>
-          {app.roll_no != null && <Line label="রোল · ক্রমিক"><span className="font-inter font-bold">{app.roll_no} · {String(app.serial_no).padStart(3, "0")}</span></Line>}
+          {app.roll_no != null && <Line label="রোল · ক্রমিক"><span className="font-inter font-bold">{app.roll_no} · {serialLabel(app.serial_no, app.exam_year)}</span></Line>}
         </div>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="exam-note" className="text-sm font-semibold">নোট (বাতিল করলে কারণ লিখুন)</label>

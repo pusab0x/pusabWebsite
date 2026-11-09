@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ApiError, type ExamApplication, type ExamStatus } from "@/lib/api";
-import { STATUS_LABELS, toBn } from "@/lib/exam";
+import { STATUS_LABELS, serialLabel, toBn } from "@/lib/exam";
 
 export const errMessage = (err: unknown) =>
   err instanceof ApiError ? err.message : "কিছু একটা ভুল হয়েছে — আবার চেষ্টা করুন।";
@@ -101,7 +101,7 @@ export function downloadCsv(apps: ExamApplication[], filename: string) {
   const rows = apps.map((a) => [
     a.application_no, a.name_bn, a.name_en, a.mother_name, a.father_name, a.phone,
     a.class_label, a.institution, a.village, a.union, a.center_name, a.payment_label,
-    a.sender_number, a.trx_id, a.amount, STATUS_LABELS[a.status], a.serial_no ?? "",
+    a.sender_number, a.trx_id, a.amount, STATUS_LABELS[a.status], serialLabel(a.serial_no, a.exam_year),
     a.roll_no ?? "", a.note, new Date(a.created_at).toLocaleString("en-GB"), a.photo_url,
   ]);
   const esc = (v: unknown) => {

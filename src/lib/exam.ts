@@ -156,9 +156,9 @@ export const ORG_NAME_BN = "পাবলিক ইউনিভার্সিট
 export const titleWithEra = (title: string) =>
   title.includes("খ্রিষ্টাব্দ") ? title : `${title} খ্রিষ্টাব্দ`;
 
-/** Zero-padded serial. English digits: Bengali ones are hard to read at admit-card size. */
-export const serialLabel = (n: number | null | undefined) =>
-  n == null ? "" : String(n).padStart(3, "0");
+/** Serial with the exam year in front: (2, 2026) → "26-0002". English digits: Bengali ones are hard to read at admit-card size. */
+export const serialLabel = (n: number | null | undefined, year: number) =>
+  n == null ? "" : `${String(year).slice(-2)}-${String(n).padStart(4, "0")}`;
 
 // The last application submitted on this device, so a returning student
 // lands straight on their status/admit card without retyping.

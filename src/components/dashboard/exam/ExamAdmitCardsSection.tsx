@@ -222,7 +222,7 @@ export function ExamAdmitCardsSection() {
                   rows.map((a) =>
                     a.roll_no != null ? (
                       <tr key={a.id} className="border-t border-[#F1F5F9]">
-                        <td className="font-inter px-4 py-3">{String(a.serial_no).padStart(3, "0")}</td>
+                        <td className="font-inter px-4 py-3">{serialLabel(a.serial_no, a.exam_year)}</td>
                         <td className="font-inter px-3 py-3 font-bold">{a.roll_no}</td>
                         <td className="px-3 py-3">{a.name_bn}</td>
                         <td className="px-3 py-3">{a.class_label}</td>
@@ -374,7 +374,7 @@ function AttendanceSheets({ apps, centers, config }: { apps: ExamApplication[]; 
             <tbody>
               {g.list.map((a) => (
                 <tr key={a.id}>
-                  <td style={{ ...cell, textAlign: "center" }}>{serialLabel(a.serial_no)}</td>
+                  <td style={{ ...cell, textAlign: "center" }}>{serialLabel(a.serial_no, a.exam_year)}</td>
                   <td style={{ ...cell, textAlign: "center" }}>{a.roll_no}</td>
                   <td style={cell}>{a.name_bn}</td>
                   <td style={cell} />
