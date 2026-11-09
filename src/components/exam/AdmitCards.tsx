@@ -187,7 +187,7 @@ export function AdmitCardPrint({ data, config }: { data: AdmitData; config: Exam
       />
       <div
         style={{
-          position: "absolute", left: 168, top: 54, width: 476, textAlign: "center", fontSize: 20,
+          position: "absolute", left: 168, top: 57, width: 458, textAlign: "center", fontSize: 17,
           fontWeight: 700, lineHeight: 1.3, whiteSpace: "nowrap", letterSpacing: "-0.01em",
         }}
       >
@@ -234,7 +234,7 @@ export function AdmitCardPrint({ data, config }: { data: AdmitData; config: Exam
           <span style={{ ...DOTTED, flex: "170 1 0", minWidth: 0, textAlign: "center" }}>{data.class_label}</span>
         </div>
         <div style={{ display: "flex", alignItems: "baseline", whiteSpace: "nowrap" }}>
-          <span>নাম (বাংলায়)ঃ</span>
+          <span>নাম (বাংলায়):</span>
           <span style={{ ...DOTTED, flex: 1, paddingLeft: 8 }}>{data.name_bn}</span>
         </div>
         <div style={{ display: "flex", alignItems: "baseline", whiteSpace: "nowrap" }}>
