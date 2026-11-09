@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { ExamConfig } from "@/lib/api";
 import {
+  EXAM_APPLY_START,
   EXAM_PATH,
   EXAM_STATUS_PATH,
   bnDate,
@@ -32,6 +33,14 @@ export const ANNOUNCEMENT_BAR_H = 44;
 export function ExamAnnouncementBar({ promo }: { promo: ExamPromo }) {
   const { config, mode } = promo;
   const to = mode === "apply" ? EXAM_PATH : EXAM_STATUS_PATH;
+  const message = (
+    <>
+      <strong>{config.title}</strong> —{" "}
+      {mode === "apply"
+        ? `অনলাইন আবেদন শুরু ${EXAM_APPLY_START}, শেষ তারিখ ${deadlineText(config)}`
+        : "প্রবেশপত্র ডাউনলোড চলছে"}
+    </>
+  );
   return (
     <Link
       to={to}
@@ -40,16 +49,12 @@ export function ExamAnnouncementBar({ promo }: { promo: ExamPromo }) {
       <span className="font-inter flex-none rounded-full bg-white px-2 py-0.5 text-[10px] font-bold tracking-[.08em] text-[#0369A1] sm:px-2.5 sm:text-[11px]">
         NEW
       </span>
-      <span className="min-w-0 truncate sm:flex-none">
-        <span className="sm:hidden">
-          {mode === "apply" ? "মেধাবৃত্তি পরীক্ষার আবেদন চলছে" : "প্রবেশপত্র ডাউনলোড চলছে"}
+      <span className="min-w-0 flex-1 overflow-hidden lg:flex-none">
+        <span className="exam-marquee lg:hidden">
+          <span className="pr-12">{message}</span>
+          <span className="pr-12" aria-hidden="true">{message}</span>
         </span>
-        <span className="hidden sm:inline">
-          <strong>{config.title}</strong> —{" "}
-          {mode === "apply"
-            ? `অনলাইন আবেদন চলছে, শেষ তারিখ ${deadlineText(config)}`
-            : "প্রবেশপত্র ডাউনলোড চলছে"}
-        </span>
+        <span className="hidden lg:inline">{message}</span>
       </span>
       <strong className="flex-none underline underline-offset-[3px]">
         <span className="sm:hidden">{mode === "apply" ? "আবেদন →" : "দেখুন →"}</span>
@@ -79,13 +84,13 @@ export function ExamHeroPill({ promo }: { promo: ExamPromo }) {
       to={promo.mode === "apply" ? EXAM_PATH : EXAM_STATUS_PATH}
       className="exam-ui inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/12 py-[5px] pl-[5px] pr-3 text-[13px] text-white [text-shadow:none] hover:text-white sm:gap-2.5 sm:py-1.5 sm:pl-1.5 sm:pr-2 sm:text-[15px]"
     >
-      <span className="font-inter rounded-full bg-[#03A9EC] px-2 py-0.5 text-[11px] font-bold sm:px-2.5 sm:text-xs">
+      <span className="font-inter hidden rounded-full bg-[#03A9EC] px-2 py-0.5 text-[11px] font-bold sm:inline sm:px-2.5 sm:text-xs">
         {examYear(promo.config)}
       </span>
       <span>
         {promo.mode === "apply" ? (
           <>
-            <span className="sm:hidden">মেধাবৃত্তি পরীক্ষার আবেদন চলছে</span>
+            <span className="pl-2 sm:hidden">{promo.config.title}</span>
             <span className="hidden sm:inline">মেধাবৃত্তি পরীক্ষার অনলাইন আবেদন শুরু হয়েছে</span>
           </>
         ) : (
@@ -139,7 +144,7 @@ export function ExamHeroCard({ promo }: { promo: ExamPromo }) {
       <div className="overflow-hidden rounded-[20px] border border-[#E2E8F0] bg-white shadow-[0_24px_40px_-28px_rgba(15,23,42,0.5)] md:hidden">
         <div className="flex flex-col gap-1 border-b border-[#E2E8F0] p-[18px]">
           <span className="font-inter text-[11px] font-bold tracking-[.14em] text-[#0284C7]">SCHOLARSHIP EXAM {config.year}</span>
-          <strong className="text-[19px]">{config.title.replace(/-\s*[০-৯]+$/, "").trim()}</strong>
+          <strong className="text-[19px]">{config.title}</strong>
           <span className="text-sm text-[#475569]">অষ্টম · নবম · দশম শ্রেণি</span>
         </div>
         <div className="grid grid-cols-2">
@@ -231,7 +236,7 @@ export function ExamMobileBar({ promo }: { promo: ExamPromo }) {
       aria-hidden={!show}
     >
       <div className="flex min-w-0 flex-1 flex-col">
-        <strong className="text-sm">মেধাবৃত্তি পরীক্ষা {examYear(config)}</strong>
+        <strong className="text-sm leading-tight">{config.title}</strong>
         <span className="truncate text-xs text-[#475569]">
           {mode === "apply" ? `শেষ তারিখ: ${deadlineText(config)}` : "প্রবেশপত্র ডাউনলোড চলছে"}
         </span>

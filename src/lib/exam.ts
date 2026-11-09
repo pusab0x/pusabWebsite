@@ -135,13 +135,20 @@ export const MARKS = [
   { subject: "সাধারণ বিজ্ঞান, আইসিটি ও সাধারণ জ্ঞান", marks: 25 },
 ];
 
+export const EXAM_APPLY_START = "১৫ই নভেম্বর ২০২৬";
+
 export const INSTRUCTIONS = [
   "পরীক্ষা হবে এমসিকিউ পদ্ধতিতে; ভুল উত্তরের জন্য নম্বর কাটা হবে না।",
   "প্রশ্ন সংশ্লিষ্ট শ্রেণির পাঠ্যপুস্তক থেকে।",
   "পরীক্ষার সময় ১ ঘণ্টা ৩০ মিনিট; ৩০ মিনিট আগে উপস্থিত থাকতে হবে।",
   "প্রবেশপত্র ও সাধারণ ক্যালকুলেটর সঙ্গে আনতে হবে।",
-  "ফলাফল পুসাবের অফিসিয়াল ফেসবুক পেজে জানানো হবে।",
+  `অনলাইন আবেদন শুরু ${EXAM_APPLY_START} থেকে।`,
+  "ফলাফল পুসাবের অফিসিয়াল ওয়েবসাইটে প্রকাশ করা হবে।",
 ];
+
+/** Drop English letters from a field that must be written in Bengali. */
+export const stripLatin = (v: string) => v.replace(/[A-Za-z]/g, "");
+export const isBengaliText = (v: string) => /[\u0980-\u09FF]/.test(v) && !/[A-Za-z]/.test(v);
 
 export const ORG_NAME_BN = "পাবলিক ইউনিভার্সিটি স্টুডেন্টস অ্যাসোসিয়েশন অব বিশ্বম্ভরপুর (পুসাব)";
 

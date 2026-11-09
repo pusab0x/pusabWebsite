@@ -336,3 +336,18 @@
   .print-page:last-child { page-break-after: auto; break-after: auto; }
 }
 @page { size: A4; margin: 10mm 0; }
+
+/* Scrolling notice in the homepage bar: two copies, moved by half their width. */
+.exam-marquee {
+  display: inline-flex;
+  width: max-content;
+  white-space: nowrap;
+  animation: exam-marquee 24s linear infinite;
+}
+@keyframes exam-marquee {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exam-marquee { display: block; width: auto; white-space: normal; animation: none; }
+  .exam-marquee > :last-child { display: none; }
+}

@@ -13,6 +13,7 @@ import {
 } from "@/lib/api";
 import {
   CLASS_OPTIONS,
+  EXAM_APPLY_START,
   EXAM_STATUS_PATH,
   INSTRUCTIONS,
   MARKS,
@@ -22,11 +23,13 @@ import {
   bnDateShort,
   bnWeekday,
   formatPhone,
+  isBengaliText,
   isValidPhone,
   normalizePhone,
   paymentNumber,
   rememberApplication,
   shortTime,
+  stripLatin,
   toBn,
   useExamConfig,
 } from "@/lib/exam";
@@ -97,6 +100,9 @@ function validate(f: FormState): Errors {
   for (const key of ["name_bn", "name_en", "mother_name", "father_name", "institution", "village", "union"] as const) {
     if (!f[key].trim()) e[key] = REQUIRED;
   }
+  for (const key of ["name_bn", "institution", "village"] as const) {
+    if (!e[key] && !isBengaliText(f[key])) e[key] = "বাংলায় লিখুন";
+  }
   if (!f.photo_url) e.photo_url = "ছবি আপলোড করুন";
   if (!isValidPhone(f.phone)) e.phone = "সঠিক মোবাইল নম্বর দিন (01XXXXXXXXX)";
   if (!f.center) e.center = "একটি কেন্দ্র বেছে নিন";
@@ -162,6 +168,7 @@ function HeaderBand({ config }: { config?: ExamConfig }) {
               বিশ্বম্ভরপুর উপজেলার স্কুল ও মাদরাসার অষ্টম, নবম ও দশম শ্রেণির শিক্ষার্থীরা এবং উপজেলার বাইরে অধ্যয়নরত বিশ্বম্ভরপুরের স্থায়ী বাসিন্দা শিক্ষার্থীরা আবেদন করতে পারবে।
             </span>
           </p>
+          <p className="mt-2 text-sm font-semibold md:text-[15px]">আবেদন শুরু: {EXAM_APPLY_START}</p>
         </div>
         {config && (
           <div className="grid w-full flex-[0_1_460px] grid-cols-2 gap-2 md:w-auto md:grid-cols-3 md:gap-2.5">
@@ -298,9 +305,9 @@ function ExamForm({ config }: { config: ExamConfig }) {
         {/* STEP 1 */}
         <section className={card + " flex flex-col gap-4 md:gap-5"}>
           <StepHeading n={1} title="শিক্ষার্থীর তথ্য" />
-          <div className="flex flex-col-reverse gap-4 md:flex-row md:flex-wrap md:gap-6">
-            <div className="flex flex-[1_1_380px] flex-col gap-4">
-              <TextField field="name_bn" label="নাম (বাংলায়)" value={form.name_bn} onChange={(v) => set("name_bn", v)} error={errors.name_bn} placeholder="যেমন: মোঃ রাকিব হাসান" />
+          <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:gap-6">
+            <div className="flex flex-col gap-4 md:flex-[1_1_380px]">
+              <TextField field="name_bn" label="নাম (বাংলায়)" value={form.name_bn} onChange={(v) => set("name_bn", v)} error={errors.name_bn} placeholder="যেমন: মোঃ রাকিব হাসান" bengali />
               <TextField field="name_en" label="নাম (ইংরেজি বড় হাতের অক্ষরে)" value={form.name_en} onChange={(v) => set("name_en", v.toUpperCase())} error={errors.name_en} placeholder="MD. RAKIB HASAN" inter className="uppercase tracking-[.03em]" />
             </div>
             <PhotoField value={form.photo_url} onChange={(v) => set("photo_url", v)} error={errors.photo_url} />
@@ -336,9 +343,9 @@ function ExamForm({ config }: { config: ExamConfig }) {
               ))}
             </div>
           </fieldset>
-          <TextField field="institution" label="শিক্ষা প্রতিষ্ঠানের নাম" value={form.institution} onChange={(v) => set("institution", v)} error={errors.institution} placeholder="স্কুল / মাদরাসার পূর্ণ নাম" />
+          <TextField field="institution" label="শিক্ষা প্রতিষ্ঠানের নাম" value={form.institution} onChange={(v) => set("institution", v)} error={errors.institution} placeholder="স্কুল / মাদরাসার পূর্ণ নাম" bengali />
           <div className="grid gap-4 md:grid-cols-2">
-            <TextField field="village" label="গ্রাম" value={form.village} onChange={(v) => set("village", v)} error={errors.village} />
+            <TextField field="village" label="গ্রাম" value={form.village} onChange={(v) => set("village", v)} error={errors.village} bengali />
             <div data-field="union" className="flex flex-col gap-1.5">
               <label htmlFor="union" className="text-[15px] font-semibold">ইউনিয়ন <Req /></label>
               <select id="union" value={form.union} onChange={(e) => set("union", e.target.value)} aria-invalid={!!errors.union}
@@ -406,7 +413,7 @@ function ExamForm({ config }: { config: ExamConfig }) {
           <summary className="min-h-7 cursor-pointer text-base font-bold">মানবণ্টন ও নির্দেশনা দেখুন</summary>
           <ul className="mt-3 flex list-disc flex-col gap-1.5 pl-[18px] text-sm leading-[1.55] text-[#334155]">
             <li>বাংলা ২৫ · গণিত ২৫ · ইংরেজি ২৫ · বিজ্ঞান/আইসিটি/সাধারণ জ্ঞান ২৫</li>
-            {[INSTRUCTIONS[0], INSTRUCTIONS[2], INSTRUCTIONS[3]].map((t) => <li key={t}>{t}</li>)}
+            {INSTRUCTIONS.filter((_, i) => i !== 1).map((t) => <li key={t}>{t}</li>)}
           </ul>
         </details>
 
@@ -500,7 +507,7 @@ function ErrorText({ msg }: { msg?: string }) {
 }
 
 function TextField({
-  field, label, mobileLabel, value, onChange, error, placeholder, type = "text", inter, className = "",
+  field, label, mobileLabel, value, onChange, error, placeholder, type = "text", inter, bengali, className = "",
 }: {
   field: string;
   label: string;
@@ -511,6 +518,7 @@ function TextField({
   placeholder?: string;
   type?: string;
   inter?: boolean;
+  bengali?: boolean;
   className?: string;
 }) {
   return (
@@ -524,10 +532,15 @@ function TextField({
         inputMode={type === "tel" ? "numeric" : undefined}
         value={value}
         placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
+        // Phonetic keyboards compose in Latin first, so only filter once composing ends.
+        onChange={(e) =>
+          onChange(bengali && !(e.nativeEvent as InputEvent).isComposing ? stripLatin(e.target.value) : e.target.value)
+        }
+        onCompositionEnd={bengali ? (e) => onChange(stripLatin(e.currentTarget.value)) : undefined}
         aria-invalid={!!error}
         className={"exam-field " + (inter ? "font-inter md:text-[15px] " : "") + className}
       />
+      {bengali && !error && <span className="text-xs text-[#64748B]">বাংলায় লিখুন — ইংরেজি লেখা যাবে না</span>}
       <ErrorText msg={error} />
     </div>
   );
@@ -617,7 +630,7 @@ function PhotoField({ value, onChange, error }: { value: string; onChange: (url:
             <Loader2 className="animate-spin text-[#0284C7]" size={22} />
           </span>
         )}
-        <input type="file" accept="image/*" capture="user" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
+        <input type="file" accept="image/*" className="hidden" onChange={(e) => pick(e.target.files?.[0])} />
       </label>
       <ErrorText msg={msg ?? undefined} />
     </div>
