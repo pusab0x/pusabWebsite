@@ -84,9 +84,18 @@ export function ApplicationDocument({ app, config }: { app: ExamApplicationStatu
         প্রবেশপত্র {EXAM_ADMIT_START} থেকে ডাউনলোড করা যাবে। আবেদন নম্বর ও মোবাইল নম্বর সংরক্ষণ করে রাখুন।
       </p>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 56 }}>
-        <div style={{ width: 230, maxWidth: "100%", textAlign: "center", borderTop: "1px solid #000000", paddingTop: 6, fontSize: 14, lineHeight: 1.5 }}>
-          <div style={{ fontWeight: 700 }}>{PRESIDENT_NAME_BN}</div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
+        <div style={{ width: 230, maxWidth: "100%", textAlign: "center", fontSize: 14, lineHeight: 1.5 }}>
+          <div
+            aria-hidden="true"
+            style={{
+              fontFamily: "'Galada', cursive", fontSize: 30, lineHeight: 1.3, color: "#1E3A8A", transform: "rotate(-4deg)",
+              printColorAdjust: "exact", WebkitPrintColorAdjust: "exact",
+            }}
+          >
+            {PRESIDENT_NAME_BN}
+          </div>
+          <div style={{ borderTop: "1px solid #000000", paddingTop: 6, fontWeight: 700 }}>{PRESIDENT_NAME_BN}</div>
           <div>সভাপতি, পুসাব</div>
         </div>
       </div>
