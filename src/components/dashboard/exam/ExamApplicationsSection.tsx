@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Search } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Loader2, Search, X } from "lucide-react";
 import {
   examApi,
   optimizeImage,
@@ -37,7 +38,7 @@ export function ExamApplicationsSection() {
   const [apps, setApps] = useState<ExamApplication[] | null>(null);
   const [stats, setStats] = useState<ExamStats | null>(null);
   const [centers, setCenters] = useState<ExamCenter[]>([]);
-  const [tab, setTab] = useState<Tab>("pending");
+  const [tab, setTab] = useState<Tab>("all");
   const [q, setQ] = useState("");
   const [cls, setCls] = useState("");
   const [center, setCenter] = useState("");
@@ -86,7 +87,7 @@ export function ExamApplicationsSection() {
   useEffect(() => setPage(0), [tab, q, cls, center]);
 
   const pageRows = filtered.slice(page * PAGE, page * PAGE + PAGE);
-  const selected = apps?.find((a) => a.id === selectedId) ?? pageRows[0] ?? null;
+  const selected = apps?.find((a) => a.id === selectedId) ?? null;
 
   const replace = (updated: ExamApplication) => {
     setApps((list) => list?.map((a) => (a.id === updated.id ? updated : a)) ?? null);
@@ -183,8 +184,8 @@ export function ExamApplicationsSection() {
         {statTile("মোট ফি সংগ্রহ", taka(s?.collected ?? 0))}
       </div>
 
-      <div className="flex flex-wrap items-start gap-[18px]">
-        <section className="min-w-0 flex-[999_1_560px] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white">
+      <div>
+        <section className="min-w-0 overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white">
           <div className="flex flex-wrap items-center gap-2.5 border-b border-[#E2E8F0] px-4 py-3.5">
             <div role="tablist" aria-label="Status" className="flex gap-1 rounded-xl bg-[#F1F5F9] p-1 text-sm">
               {TABS.map((t) => (
@@ -287,19 +288,25 @@ export function ExamApplicationsSection() {
           </div>
         </section>
 
-        <DetailPanel
-          key={selected?.id ?? "none"}
-          app={selected}
-          busy={busyId === selected?.id}
-          onVerify={verify}
-          onReject={reject}
-          onReset={reset}
-          onDeleted={(id) => {
-            setApps((list) => list?.filter((a) => a.id !== id) ?? null);
-            examApi.stats().then(setStats).catch(() => {});
-          }}
-        />
       </div>
+
+      <AnimatePresence>
+        {selected && (
+          <DetailDrawer
+            key={selected.id}
+            app={selected}
+            busy={busyId === selected.id}
+            onClose={() => setSelectedId(null)}
+            onVerify={verify}
+            onReject={reject}
+            onReset={reset}
+            onDeleted={(id) => {
+              setApps((list) => list?.filter((a) => a.id !== id) ?? null);
+              examApi.stats().then(setStats).catch(() => {});
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <OfflineModal
         open={offlineOpen}
@@ -316,31 +323,36 @@ export function ExamApplicationsSection() {
   );
 }
 
-function DetailPanel({
+function DetailDrawer({
   app,
   busy,
+  onClose,
   onVerify,
   onReject,
   onReset,
   onDeleted,
 }: {
-  app: ExamApplication | null;
+  app: ExamApplication;
   busy: boolean;
+  onClose: () => void;
   onVerify: (a: ExamApplication, note: string) => void;
   onReject: (a: ExamApplication, note: string) => void;
   onReset: (a: ExamApplication) => void;
   onDeleted: (id: number) => void;
 }) {
-  const [note, setNote] = useState(app?.note ?? "");
+  const [note, setNote] = useState(app.note ?? "");
   const [confirm, confirmEl] = useConfirm();
 
-  if (!app) {
-    return (
-      <aside className="min-w-0 flex-[1_1_320px] rounded-2xl border border-[#E2E8F0] bg-white p-6 text-center text-sm text-[#64748B]">
-        বিস্তারিত দেখতে একটি আবেদন বেছে নিন।
-      </aside>
-    );
-  }
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = overflow;
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
 
   const remove = async () => {
     if (!(await confirm(`${app.name_bn}-এর আবেদন (${app.application_no}) স্থায়ীভাবে মুছে যাবে।`, "আবেদন মুছবেন?"))) return;
@@ -361,13 +373,37 @@ function DetailPanel({
   );
 
   return (
-    <aside aria-label="আবেদনের বিস্তারিত" className="min-w-0 flex-[1_1_320px] overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white">
-      {confirmEl}
-      <div className="flex items-center justify-between border-b border-[#E2E8F0] px-[18px] py-4">
-        <h2 className="text-[17px] font-bold">আবেদনের বিস্তারিত</h2>
-        <span className="font-inter text-[13px] text-[#64748B]">{app.application_no}</span>
+    <>
+    {/* Outside the sliding panel: its transform would trap the fixed dialog. */}
+    {confirmEl}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-[200] bg-[#0B2540]/50"
+    />
+    <motion.aside
+      role="dialog"
+      aria-modal="true"
+      aria-label="আবেদনের বিস্তারিত"
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
+      className="exam-ui fixed inset-y-0 right-0 z-[205] flex w-full max-w-[480px] flex-col bg-white text-[#0F172A] shadow-2xl"
+    >
+      <div className="flex flex-none items-center justify-between gap-3 border-b border-[#E2E8F0] px-[18px] py-4">
+        <div className="flex min-w-0 flex-col">
+          <h2 className="text-[17px] font-bold">আবেদনের বিস্তারিত</h2>
+          <span className="font-inter text-[13px] text-[#64748B]">{app.application_no}</span>
+        </div>
+        <button type="button" onClick={onClose} aria-label="বন্ধ করুন"
+          className="grid h-10 w-10 flex-none place-items-center rounded-xl text-[#475569] transition-colors hover:bg-[#F1F5F9]">
+          <X size={18} />
+        </button>
       </div>
-      <div className="flex flex-col gap-4 p-[18px]">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-[18px]">
         <div className="flex gap-3.5">
           {app.photo_url ? (
             <a href={app.photo_url} target="_blank" rel="noopener noreferrer" className="h-[88px] w-[72px] flex-none overflow-hidden rounded-[10px] bg-[#E2E8F0]">
@@ -431,7 +467,8 @@ function DetailPanel({
           আবেদন মুছুন
         </button>
       </div>
-    </aside>
+    </motion.aside>
+    </>
   );
 }
 
