@@ -349,5 +349,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .exam-marquee { display: block; width: auto; white-space: normal; animation: none; }
-  .exam-marquee > :last-child { display: none; }
+  .exam-marquee > :not(:first-child) { display: none; }
 }

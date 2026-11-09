@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { ExamConfig } from "@/lib/api";
 import {
+  EXAM_ADMIT_START,
   EXAM_APPLY_START,
   EXAM_PATH,
   EXAM_STATUS_PATH,
@@ -37,7 +38,7 @@ export function ExamAnnouncementBar({ promo }: { promo: ExamPromo }) {
     <>
       <strong>{config.title}</strong> —{" "}
       {mode === "apply"
-        ? `অনলাইন আবেদন শুরু ${EXAM_APPLY_START}, শেষ তারিখ ${deadlineText(config)}`
+        ? `অনলাইন আবেদন শুরু ${EXAM_APPLY_START}, শেষ তারিখ ${deadlineText(config)} · প্রবেশপত্র ডাউনলোড ${EXAM_ADMIT_START} থেকে`
         : "প্রবেশপত্র ডাউনলোড চলছে"}
     </>
   );
@@ -49,12 +50,12 @@ export function ExamAnnouncementBar({ promo }: { promo: ExamPromo }) {
       <span className="font-inter flex-none rounded-full bg-white px-2 py-0.5 text-[10px] font-bold tracking-[.08em] text-[#0369A1] sm:px-2.5 sm:text-[11px]">
         NEW
       </span>
-      <span className="min-w-0 flex-1 overflow-hidden lg:flex-none">
-        <span className="exam-marquee lg:hidden">
-          <span className="pr-12">{message}</span>
-          <span className="pr-12" aria-hidden="true">{message}</span>
+      <span className="min-w-0 flex-1 overflow-hidden">
+        <span className="exam-marquee">
+          {[0, 1, 2, 3].map((i) => (
+            <span key={i} className="pr-12" aria-hidden={i > 0 || undefined}>{message}</span>
+          ))}
         </span>
-        <span className="hidden lg:inline">{message}</span>
       </span>
       <strong className="flex-none underline underline-offset-[3px]">
         <span className="sm:hidden">{mode === "apply" ? "আবেদন →" : "দেখুন →"}</span>
@@ -91,7 +92,7 @@ export function ExamHeroPill({ promo }: { promo: ExamPromo }) {
         {promo.mode === "apply" ? (
           <>
             <span className="pl-2 sm:hidden">{promo.config.title}</span>
-            <span className="hidden sm:inline">মেধাবৃত্তি পরীক্ষার অনলাইন আবেদন শুরু হয়েছে</span>
+            <span className="hidden sm:inline">মেধাবৃত্তি পরীক্ষার অনলাইন আবেদন শুরু {EXAM_APPLY_START}</span>
           </>
         ) : (
           "মেধাবৃত্তি পরীক্ষার প্রবেশপত্র ডাউনলোড চলছে"
@@ -166,6 +167,12 @@ export function ExamHeroCard({ promo }: { promo: ExamPromo }) {
           </Link>
         </div>
       </div>
+
+      {mode === "apply" && (
+        <p className="mx-auto mt-3 w-fit max-w-full rounded-2xl bg-black/45 px-4 py-2 text-center text-sm font-semibold text-white md:text-[15px]">
+          প্রবেশপত্র {EXAM_ADMIT_START} থেকে ডাউনলোড করা যাবে
+        </p>
+      )}
     </div>
   );
 }
@@ -186,7 +193,7 @@ export function ExamStepsSection({ promo }: { promo: ExamPromo }) {
   const steps = [
     { title: "ফর্ম পূরণ", sub: "তথ্য ও ছবি দিন" },
     { title: `${toBn(config.fee)} টাকা ফি`, sub: "বিকাশ/নগদ/রকেটে" },
-    { title: "প্রবেশপত্র", sub: "যাচাইয়ের পর ডাউনলোড" },
+    { title: "প্রবেশপত্র", sub: `${EXAM_ADMIT_START} থেকে ডাউনলোড` },
   ];
   return (
     <section className="exam-ui bg-[#F5F7FA] text-[#0F172A]">

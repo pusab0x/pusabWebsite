@@ -13,6 +13,7 @@ import {
 } from "@/lib/api";
 import {
   CLASS_OPTIONS,
+  EXAM_ADMIT_START,
   EXAM_APPLY_START,
   EXAM_STATUS_PATH,
   INSTRUCTIONS,
@@ -168,7 +169,7 @@ function HeaderBand({ config }: { config?: ExamConfig }) {
               বিশ্বম্ভরপুর উপজেলার স্কুল ও মাদরাসার অষ্টম, নবম ও দশম শ্রেণির শিক্ষার্থীরা এবং উপজেলার বাইরে অধ্যয়নরত বিশ্বম্ভরপুরের স্থায়ী বাসিন্দা শিক্ষার্থীরা আবেদন করতে পারবে।
             </span>
           </p>
-          <p className="mt-2 text-sm font-semibold md:text-[15px]">আবেদন শুরু: {EXAM_APPLY_START}</p>
+          <p className="mt-2 text-sm font-semibold md:text-[15px]">আবেদন শুরু: {EXAM_APPLY_START} · প্রবেশপত্র ডাউনলোড: {EXAM_ADMIT_START} থেকে</p>
         </div>
         {config && (
           <div className="grid w-full flex-[0_1_460px] grid-cols-2 gap-2 md:w-auto md:grid-cols-3 md:gap-2.5">

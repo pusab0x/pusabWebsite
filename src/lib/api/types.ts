@@ -319,10 +319,15 @@ export interface ExamApplicationStatus {
   application_no: string;
   name_bn: string;
   name_en: string;
+  mother_name: string;
+  father_name: string;
+  phone: string;
   photo_url: string;
   class_level: ExamClassLevel;
   class_label: string;
   institution: string;
+  village: string;
+  union: string;
   center: ExamCenter;
   payment_method: ExamPaymentMethod;
   payment_label: string;

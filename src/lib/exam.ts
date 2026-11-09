@@ -136,6 +136,8 @@ export const MARKS = [
 ];
 
 export const EXAM_APPLY_START = "১৫ই নভেম্বর ২০২৬";
+export const EXAM_ADMIT_START = "১৫ই ডিসেম্বর ২০২৬";
+export const PRESIDENT_NAME_BN = "আবুল হাসনাত";
 
 export const INSTRUCTIONS = [
   "পরীক্ষা হবে এমসিকিউ পদ্ধতিতে; ভুল উত্তরের জন্য নম্বর কাটা হবে না।",
@@ -143,6 +145,7 @@ export const INSTRUCTIONS = [
   "পরীক্ষার সময় ১ ঘণ্টা ৩০ মিনিট; ৩০ মিনিট আগে উপস্থিত থাকতে হবে।",
   "প্রবেশপত্র ও সাধারণ ক্যালকুলেটর সঙ্গে আনতে হবে।",
   `অনলাইন আবেদন শুরু ${EXAM_APPLY_START} থেকে।`,
+  `প্রবেশপত্র ${EXAM_ADMIT_START} থেকে ডাউনলোড করা যাবে।`,
   "ফলাফল পুসাবের অফিসিয়াল ওয়েবসাইট ও ফেসবুক পেজে প্রকাশ করা হবে।",
 ];
 

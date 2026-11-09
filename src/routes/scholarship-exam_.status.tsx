@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
+import { flushSync } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { ApiError, examApi, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
 import {
+  EXAM_ADMIT_START,
   EXAM_PATH,
   STATUS_LABELS,
   formatPhone,
@@ -18,6 +20,7 @@ import {
   centerLabel,
   type AdmitData,
 } from "@/components/exam/AdmitCards";
+import { ApplicationDocument } from "@/components/exam/ApplicationDocument";
 import { PrintArea, printArea } from "@/components/exam/print";
 
 export const Route = createFileRoute("/scholarship-exam_/status")({
@@ -183,6 +186,7 @@ function Result({
   onDownloaded: () => void;
   onSwitch: () => void;
 }) {
+  const [printing, setPrinting] = useState<"application" | "admit">("application");
   const admit: AdmitData = {
     name_bn: app.name_bn,
     photo_url: app.photo_url,
@@ -195,8 +199,9 @@ function Result({
   const rejected = app.status === "rejected";
   const canDownload = app.admit_available;
 
-  const print = () => {
-    onDownloaded();
+  const printDoc = (doc: "application" | "admit") => {
+    flushSync(() => setPrinting(doc));
+    if (doc === "admit") onDownloaded();
     printArea();
   };
 
@@ -211,96 +216,76 @@ function Result({
   const message = rejected
     ? app.note || "পেমেন্টের তথ্য মেলেনি। বিস্তারিত জানতে যোগাযোগ করুন।"
     : verified
-      ? canDownload
-        ? "আপনার পেমেন্ট যাচাই সম্পন্ন। প্রবেশপত্র ডাউনলোড করে প্রিন্ট করুন এবং পরীক্ষার দিন সঙ্গে আনুন।"
-        : "আপনার পেমেন্ট যাচাই সম্পন্ন। রোল নম্বর দেওয়া হলে এখান থেকেই প্রবেশপত্র ডাউনলোড করা যাবে।"
-      : "আপনার আবেদন নম্বর সংরক্ষণ করে রাখুন। পেমেন্ট যাচাইয়ের পর প্রবেশপত্র ডাউনলোড করা যাবে।";
+      ? "আপনার পেমেন্ট যাচাই সম্পন্ন হয়েছে।"
+      : "আপনার আবেদন নম্বর সংরক্ষণ করে রাখুন। পেমেন্ট যাচাই করা হচ্ছে।";
 
   const contact = config.contacts[0];
 
   return (
     <>
-      {/* ── Laptop ─────────────────────────────────────────── */}
-      <div className="hidden flex-wrap items-start gap-6 md:flex">
-        <section className="flex min-w-0 flex-[1_1_340px] flex-col gap-[18px] rounded-[20px] border border-[#E2E8F0] bg-white p-7">
+      <div className="flex flex-col gap-4 md:flex-row md:items-start md:gap-6">
+        <aside className="flex min-w-0 flex-col gap-[18px] rounded-[20px] border border-[#E2E8F0] bg-white p-5 md:order-2 md:w-[340px] md:flex-none md:p-6">
           {rejected ? <RejectBadge /> : <CheckBadge />}
           <div className="flex flex-col gap-1.5">
-            <h1 className="text-[28px] font-bold">{heading}</h1>
-            <p className="text-base leading-relaxed text-[#475569]">{message}</p>
+            <h1 className="text-[24px] font-bold md:text-[26px]">{heading}</h1>
+            <p className="text-[15px] leading-relaxed text-[#475569]">{message}</p>
           </div>
           <div className="flex flex-col rounded-[14px] border border-[#E2E8F0] text-[15px]">
-            <div className="flex justify-between border-b border-[#F1F5F9] px-4 py-3">
+            <div className="flex justify-between gap-3 border-b border-[#F1F5F9] px-4 py-3">
               <span className="text-[#64748B]">আবেদন নম্বর</span>
               <strong className="font-inter">{app.application_no}</strong>
             </div>
-            <div className="flex items-center justify-between border-b border-[#F1F5F9] px-4 py-3">
-              <span className="text-[#64748B]">পেমেন্ট</span>
+            <div className="flex items-center justify-between gap-3 border-b border-[#F1F5F9] px-4 py-3">
+              <span className="text-[#64748B]">পেমেন্ট স্ট্যাটাস</span>
               <StatusPill status={app.status} />
             </div>
-            <div className="flex justify-between px-4 py-3">
+            <div className="flex justify-between gap-3 px-4 py-3">
               <span className="text-[#64748B]">Transaction ID</span>
               <strong className="font-inter">{app.trx_id || "—"}</strong>
             </div>
           </div>
-          <div className="flex flex-wrap gap-2.5">
-            <button type="button" onClick={print} disabled={!canDownload}
-              className="h-[52px] flex-[1_1_160px] rounded-full bg-[#0284C7] text-base font-bold text-white transition-colors hover:bg-[#0369A1] disabled:bg-[#C9D8E6] disabled:text-[#475569]">
-              PDF ডাউনলোড
+          {!rejected && (
+            <button type="button" onClick={() => printDoc("application")}
+              className="h-[52px] rounded-full bg-[#0284C7] text-base font-bold text-white transition-colors hover:bg-[#0369A1]">
+              আবেদনপত্র ডাউনলোড (PDF)
             </button>
-            <button type="button" onClick={print} disabled={!canDownload}
-              className="h-[52px] flex-[1_1_120px] rounded-full border border-[#CBD5E1] bg-white text-base font-semibold transition-colors hover:border-[#94A3B8] disabled:opacity-50">
-              প্রিন্ট
+          )}
+          {!rejected && !canDownload && (
+            <p className="rounded-[14px] bg-[#F0FAFE] px-4 py-3 text-center text-[15px] font-semibold leading-relaxed text-[#075985]">
+              প্রবেশপত্র {EXAM_ADMIT_START} থেকে ডাউনলোড করা যাবে
+            </p>
+          )}
+          {canDownload && (
+            <button type="button" onClick={() => printDoc("admit")}
+              className="h-[52px] rounded-full bg-[#16A34A] text-base font-bold text-white transition-colors hover:bg-[#15803D]">
+              প্রবেশপত্র ডাউনলোড (PDF)
             </button>
-          </div>
+          )}
           <Footer refreshing={refreshing} onRefresh={onRefresh} onSwitch={onSwitch} contact={contact} />
-        </section>
-        <div className="min-w-0 flex-[2_1_560px]">
-          <AdmitCardArticle data={admit} config={config} />
+        </aside>
+
+        <div className="flex min-w-0 flex-1 flex-col gap-4 md:order-1 md:gap-6">
+          <section className="rounded-[20px] border border-[#E2E8F0] bg-white p-4 md:p-8">
+            <ApplicationDocument app={app} config={config} />
+          </section>
+          {canDownload && (
+            <>
+              <div className="hidden md:block"><AdmitCardArticle data={admit} config={config} /></div>
+              <div className="md:hidden"><AdmitCardMobile data={admit} config={config} /></div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* ── Mobile ─────────────────────────────────────────── */}
-      <div className="flex flex-col gap-4 md:hidden">
-        <div className="flex flex-col items-center gap-2.5 rounded-[20px] bg-[#F5F7FA] px-2 pt-6 text-center">
-          {rejected ? <RejectBadge size={64} /> : <CheckBadge size={64} />}
-          <h1 className="text-[24px] font-bold">{heading}</h1>
-          <p className="text-[15px] leading-relaxed text-[#475569]">{message}</p>
-        </div>
-        <div className="flex flex-col gap-3 rounded-2xl border border-[#E2E8F0] bg-white p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[#64748B]">আবেদন নম্বর</span>
-            <strong className="font-inter text-lg">{app.application_no}</strong>
-          </div>
-          <div className="flex items-center justify-between border-t border-[#F1F5F9] pt-3">
-            <span className="text-sm text-[#64748B]">পেমেন্ট স্ট্যাটাস</span>
-            <StatusPill status={app.status} />
-          </div>
-        </div>
-        {!rejected && <AdmitCardMobile data={admit} config={config} />}
-        <button type="button" onClick={print} disabled={!canDownload}
-          className="h-[54px] rounded-full bg-[#0284C7] text-[17px] font-bold text-white disabled:bg-[#C9D8E6] disabled:text-[#475569]">
-          প্রবেশপত্র ডাউনলোড (PDF)
-        </button>
-        {!canDownload && !rejected && (
-          <span className="-mt-1.5 text-center text-[13px] text-[#64748B]">
-            {verified ? "রোল নম্বর দেওয়া হলে বাটনটি চালু হবে।" : "পেমেন্ট যাচাই হলে বাটনটি চালু হবে।"}
-          </span>
-        )}
-        <button type="button" onClick={onRefresh} disabled={refreshing}
-          className="inline-flex h-[50px] items-center justify-center gap-2 rounded-full border border-[#CBD5E1] bg-white text-base font-semibold">
-          {refreshing && <Loader2 size={16} className="animate-spin" />}
-          আবেদনের অবস্থা দেখুন
-        </button>
-        <button type="button" onClick={onSwitch} className="text-sm font-semibold text-[#0284C7]">
-          অন্য আবেদন নম্বর দিয়ে দেখুন
-        </button>
-      </div>
-
-      {canDownload && (
-        <PrintArea>
+      <PrintArea>
+        {printing === "admit" ? (
           <AdmitCardPrint data={admit} config={config} />
-        </PrintArea>
-      )}
+        ) : (
+          <div style={{ width: 794, margin: "0 auto", padding: "0 44px", boxSizing: "border-box" }}>
+            <ApplicationDocument app={app} config={config} />
+          </div>
+        )}
+      </PrintArea>
     </>
   );
 }
