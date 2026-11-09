@@ -262,7 +262,7 @@ export function ExamApplicationsSection() {
                                 className="h-9 rounded-[9px] border border-[#FECACA] bg-white px-3 text-[13px] font-semibold text-[#B91C1C] hover:bg-[#FEF2F2] disabled:opacity-60">বাতিল</button>
                             </div>
                           ) : a.status === "verified" ? (
-                            <span className="font-inter text-[13px] text-[#64748B]">{a.roll_no ? `রোল ${toBn(a.roll_no)}` : "রোল বাকি"}</span>
+                            <span className="font-inter text-[13px] text-[#64748B]">{a.roll_no ? `রোল ${a.roll_no}` : "রোল বাকি"}</span>
                           ) : (
                             <button type="button" disabled={busyId === a.id} onClick={() => reset(a)} className="text-[13px] font-semibold text-[#0284C7]">পুনর্বিবেচনা</button>
                           )}

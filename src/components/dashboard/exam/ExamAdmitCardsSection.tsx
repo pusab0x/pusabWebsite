@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { Loader2, X } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { examApi, type ExamApplication, type ExamCenter, type ExamConfig, type ExamStats } from "@/lib/api";
-import { CLASS_OPTIONS, bnDateLong, bnSerial, bnWeekday, toBn, titleWithEra, ORG_NAME_BN } from "@/lib/exam";
+import { CLASS_OPTIONS, bnDateLong, serialLabel, bnWeekday, toBn, titleWithEra, ORG_NAME_BN } from "@/lib/exam";
 import { AdmitCardPrint, type AdmitData } from "@/components/exam/AdmitCards";
 import { PrintArea, printArea } from "@/components/exam/print";
 import { ExamPageTitle, Switch, btnOutline, btnPrimary, errMessage, selectCls } from "./shared";
@@ -114,7 +114,7 @@ export function ExamAdmitCardsSection() {
     try {
       const updated = await examApi.assignRoll(app.id);
       setApps((list) => list?.map((a) => (a.id === updated.id ? updated : a)) ?? null);
-      toast.success(`${updated.name_bn} — রোল ${toBn(updated.roll_no)}`);
+      toast.success(`${updated.name_bn} — রোল ${updated.roll_no}`);
     } catch (err) {
       toast.error(errMessage(err));
     }
@@ -374,8 +374,8 @@ function AttendanceSheets({ apps, centers, config }: { apps: ExamApplication[]; 
             <tbody>
               {g.list.map((a) => (
                 <tr key={a.id}>
-                  <td style={{ ...cell, textAlign: "center" }}>{bnSerial(a.serial_no)}</td>
-                  <td style={{ ...cell, textAlign: "center" }}>{toBn(a.roll_no)}</td>
+                  <td style={{ ...cell, textAlign: "center" }}>{serialLabel(a.serial_no)}</td>
+                  <td style={{ ...cell, textAlign: "center" }}>{a.roll_no}</td>
                   <td style={cell}>{a.name_bn}</td>
                   <td style={cell} />
                 </tr>

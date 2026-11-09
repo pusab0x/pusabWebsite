@@ -143,7 +143,7 @@ export const INSTRUCTIONS = [
   "পরীক্ষার সময় ১ ঘণ্টা ৩০ মিনিট; ৩০ মিনিট আগে উপস্থিত থাকতে হবে।",
   "প্রবেশপত্র ও সাধারণ ক্যালকুলেটর সঙ্গে আনতে হবে।",
   `অনলাইন আবেদন শুরু ${EXAM_APPLY_START} থেকে।`,
-  "ফলাফল পুসাবের অফিসিয়াল ওয়েবসাইটে প্রকাশ করা হবে।",
+  "ফলাফল পুসাবের অফিসিয়াল ওয়েবসাইট ও ফেসবুক পেজে প্রকাশ করা হবে।",
 ];
 
 /** Drop English letters from a field that must be written in Bengali. */
@@ -156,9 +156,9 @@ export const ORG_NAME_BN = "পাবলিক ইউনিভার্সিট
 export const titleWithEra = (title: string) =>
   title.includes("খ্রিষ্টাব্দ") ? title : `${title} খ্রিষ্টাব্দ`;
 
-/** Zero-padded serial in Bengali digits: 1 → "০০১" */
-export const bnSerial = (n: number | null | undefined) =>
-  n == null ? "" : toBn(String(n).padStart(3, "0"));
+/** Zero-padded serial. English digits: Bengali ones are hard to read at admit-card size. */
+export const serialLabel = (n: number | null | undefined) =>
+  n == null ? "" : String(n).padStart(3, "0");
 
 // The last application submitted on this device, so a returning student
 // lands straight on their status/admit card without retyping.

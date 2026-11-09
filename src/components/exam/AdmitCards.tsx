@@ -4,10 +4,9 @@ import { optimizeImage, type ExamConfig } from "@/lib/api";
 import {
   ORG_NAME_BN,
   bnDateLong,
-  bnSerial,
+  serialLabel,
   bnWeekday,
   titleWithEra,
-  toBn,
 } from "@/lib/exam";
 
 /** The fields an admit card needs — satisfied by both the public status
@@ -52,8 +51,8 @@ export function AdmitCardArticle({ data, config, pendingLabel = "যাচাই
         />
       </div>
       <div className="grid grid-cols-3 gap-3">
-        <InfoTile label="ক্রমিক নম্বর" value={hasRoll ? bnSerial(data.serial_no) : pendingLabel} inter={hasRoll} />
-        <InfoTile label="রোল নম্বর" value={hasRoll ? toBn(data.roll_no) : pendingLabel} inter={hasRoll} />
+        <InfoTile label="ক্রমিক নম্বর" value={hasRoll ? serialLabel(data.serial_no) : pendingLabel} inter={hasRoll} />
+        <InfoTile label="রোল নম্বর" value={hasRoll ? String(data.roll_no) : pendingLabel} inter={hasRoll} />
         <InfoTile label="শ্রেণি" value={data.class_label} />
       </div>
       <div className="flex flex-col gap-2.5 text-base">
@@ -137,8 +136,8 @@ export function AdmitCardMobile({ data, config, pendingLabel = "যাচাই�
           />
         </div>
         <div className="grid grid-cols-2 gap-2.5 text-sm">
-          <MobileField label="ক্রমিক নম্বর" value={hasRoll ? bnSerial(data.serial_no) : pendingLabel} />
-          <MobileField label="রোল নম্বর" value={hasRoll ? toBn(data.roll_no) : pendingLabel} />
+          <MobileField label="ক্রমিক নম্বর" value={hasRoll ? serialLabel(data.serial_no) : pendingLabel} />
+          <MobileField label="রোল নম্বর" value={hasRoll ? String(data.roll_no) : pendingLabel} />
           <MobileField label="নাম" value={data.name_bn} />
           <MobileField label="শ্রেণি" value={data.class_label} />
         </div>
@@ -227,9 +226,9 @@ export function AdmitCardPrint({ data, config }: { data: AdmitData; config: Exam
       >
         <div style={{ display: "flex", alignItems: "baseline", whiteSpace: "nowrap" }}>
           <span>ক্রমিক নম্বরঃ&nbsp;</span>
-          <span style={{ ...DOTTED, flex: "108 1 0", minWidth: 0, textAlign: "center" }}>{bnSerial(data.serial_no)}</span>
+          <span style={{ ...DOTTED, flex: "108 1 0", minWidth: 0, textAlign: "center" , fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: 15 }}>{serialLabel(data.serial_no)}</span>
           <span style={{ paddingLeft: 6 }}>রোল নম্বরঃ</span>
-          <span style={{ ...DOTTED, flex: "125 1 0", minWidth: 0, textAlign: "center" }}>{toBn(data.roll_no)}</span>
+          <span style={{ ...DOTTED, flex: "125 1 0", minWidth: 0, textAlign: "center" , fontFamily: "Inter, sans-serif", fontWeight: 700, fontSize: 15 }}>{data.roll_no}</span>
           <span style={{ paddingLeft: 8 }}>শ্রেণিঃ&nbsp;</span>
           <span style={{ ...DOTTED, flex: "170 1 0", minWidth: 0, textAlign: "center" }}>{data.class_label}</span>
         </div>

@@ -419,7 +419,7 @@ function ExamForm({ config }: { config: ExamConfig }) {
 
         {/* Confirm + submit */}
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap md:items-center md:rounded-[18px] md:border md:border-[#E2E8F0] md:bg-white md:px-7 md:py-[22px]">
-          <label data-field="agree" className="flex flex-[1_1_420px] gap-2.5 px-1 text-sm leading-relaxed md:px-0 md:text-[15px]">
+          <label data-field="agree" className="flex gap-2.5 md:flex-[1_1_420px] px-1 text-sm leading-relaxed md:px-0 md:text-[15px]">
             <input type="checkbox" checked={form.agree} onChange={(e) => set("agree", e.target.checked)}
               className="mt-[3px] h-5 w-5 flex-none accent-[#0284C7] md:mt-1 md:h-[18px] md:w-[18px]" />
             <span>
