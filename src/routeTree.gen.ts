@@ -9,98 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as SecretaryMessageRouteImport } from './routes/secretary-message'
-import { Route as ScholarshipExamRouteImport } from './routes/scholarship-exam'
-import { Route as SayorRouteImport } from './routes/sayor'
-import { Route as PublicityRouteImport } from './routes/publicity'
-import { Route as ProgramsRouteImport } from './routes/programs'
-import { Route as PresidentMessageRouteImport } from './routes/president-message'
-import { Route as MomentsRouteImport } from './routes/moments'
-import { Route as LeadershipRouteImport } from './routes/leadership'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as HonorBoardRouteImport } from './routes/honor-board'
-import { Route as FelicitationRouteImport } from './routes/felicitation'
-import { Route as ConveningCommitteeRouteImport } from './routes/convening-committee'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as HonorBoardIndexRouteImport } from './routes/honor-board/index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConveningCommitteeRouteImport } from './routes/convening-committee'
+import { Route as FelicitationRouteImport } from './routes/felicitation'
+import { Route as HonorBoardRouteImport } from './routes/honor-board'
+import { Route as JoinRouteImport } from './routes/join'
+import { Route as LeadershipRouteImport } from './routes/leadership'
+import { Route as MomentsRouteImport } from './routes/moments'
+import { Route as PresidentMessageRouteImport } from './routes/president-message'
+import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as PublicityRouteImport } from './routes/publicity'
+import { Route as SayorRouteImport } from './routes/sayor'
+import { Route as ScholarshipExamRouteImport } from './routes/scholarship-exam'
+import { Route as SecretaryMessageRouteImport } from './routes/secretary-message'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as ScholarshipExamStatusRouteImport } from './routes/scholarship-exam_.status'
-import { Route as ProgramsSlugRouteImport } from './routes/programs_.$slug'
-import { Route as HonorBoardYearRouteImport } from './routes/honor-board/$year'
-import { Route as EcYearRouteImport } from './routes/ec.$year'
 import { Route as DashboardSectionRouteImport } from './routes/dashboard/$section'
+import { Route as EcYearRouteImport } from './routes/ec.$year'
+import { Route as HonorBoardIndexRouteImport } from './routes/honor-board/index'
+import { Route as HonorBoardYearRouteImport } from './routes/honor-board/$year'
+import { Route as ProgramsSlugRouteImport } from './routes/programs_.$slug'
+import { Route as ScholarshipExamStatusRouteImport } from './routes/scholarship-exam_.status'
 
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SecretaryMessageRoute = SecretaryMessageRouteImport.update({
-  id: '/secretary-message',
-  path: '/secretary-message',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScholarshipExamRoute = ScholarshipExamRouteImport.update({
-  id: '/scholarship-exam',
-  path: '/scholarship-exam',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SayorRoute = SayorRouteImport.update({
-  id: '/sayor',
-  path: '/sayor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PublicityRoute = PublicityRouteImport.update({
-  id: '/publicity',
-  path: '/publicity',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProgramsRoute = ProgramsRouteImport.update({
-  id: '/programs',
-  path: '/programs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PresidentMessageRoute = PresidentMessageRouteImport.update({
-  id: '/president-message',
-  path: '/president-message',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MomentsRoute = MomentsRouteImport.update({
-  id: '/moments',
-  path: '/moments',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeadershipRoute = LeadershipRouteImport.update({
-  id: '/leadership',
-  path: '/leadership',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HonorBoardRoute = HonorBoardRouteImport.update({
-  id: '/honor-board',
-  path: '/honor-board',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FelicitationRoute = FelicitationRouteImport.update({
-  id: '/felicitation',
-  path: '/felicitation',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConveningCommitteeRoute = ConveningCommitteeRouteImport.update({
-  id: '/convening-committee',
-  path: '/convening-committee',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -108,9 +43,89 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConveningCommitteeRoute = ConveningCommitteeRouteImport.update({
+  id: '/convening-committee',
+  path: '/convening-committee',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FelicitationRoute = FelicitationRouteImport.update({
+  id: '/felicitation',
+  path: '/felicitation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HonorBoardRoute = HonorBoardRouteImport.update({
+  id: '/honor-board',
+  path: '/honor-board',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadershipRoute = LeadershipRouteImport.update({
+  id: '/leadership',
+  path: '/leadership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MomentsRoute = MomentsRouteImport.update({
+  id: '/moments',
+  path: '/moments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PresidentMessageRoute = PresidentMessageRouteImport.update({
+  id: '/president-message',
+  path: '/president-message',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicityRoute = PublicityRouteImport.update({
+  id: '/publicity',
+  path: '/publicity',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SayorRoute = SayorRouteImport.update({
+  id: '/sayor',
+  path: '/sayor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScholarshipExamRoute = ScholarshipExamRouteImport.update({
+  id: '/scholarship-exam',
+  path: '/scholarship-exam',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SecretaryMessageRoute = SecretaryMessageRouteImport.update({
+  id: '/secretary-message',
+  path: '/secretary-message',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardIndexRoute = DashboardIndexRouteImport.update({
+  id: '/dashboard/',
+  path: '/dashboard/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSectionRoute = DashboardSectionRouteImport.update({
+  id: '/dashboard/$section',
+  path: '/dashboard/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EcYearRoute = EcYearRouteImport.update({
+  id: '/ec/$year',
+  path: '/ec/$year',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HonorBoardIndexRoute = HonorBoardIndexRouteImport.update({
@@ -118,34 +133,19 @@ const HonorBoardIndexRoute = HonorBoardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => HonorBoardRoute,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScholarshipExamStatusRoute = ScholarshipExamStatusRouteImport.update({
-  id: '/scholarship-exam_/status',
-  path: '/scholarship-exam/status',
-  getParentRoute: () => rootRouteImport,
+const HonorBoardYearRoute = HonorBoardYearRouteImport.update({
+  id: '/$year',
+  path: '/$year',
+  getParentRoute: () => HonorBoardRoute,
 } as any)
 const ProgramsSlugRoute = ProgramsSlugRouteImport.update({
   id: '/programs_/$slug',
   path: '/programs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HonorBoardYearRoute = HonorBoardYearRouteImport.update({
-  id: '/$year',
-  path: '/$year',
-  getParentRoute: () => HonorBoardRoute,
-} as any)
-const EcYearRoute = EcYearRouteImport.update({
-  id: '/ec/$year',
-  path: '/ec/$year',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardSectionRoute = DashboardSectionRouteImport.update({
-  id: '/dashboard/$section',
-  path: '/dashboard/$section',
+const ScholarshipExamStatusRoute = ScholarshipExamStatusRouteImport.update({
+  id: '/scholarship-exam_/status',
+  path: '/scholarship-exam/status',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -327,102 +327,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/secretary-message': {
-      id: '/secretary-message'
-      path: '/secretary-message'
-      fullPath: '/secretary-message'
-      preLoaderRoute: typeof SecretaryMessageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/scholarship-exam': {
-      id: '/scholarship-exam'
-      path: '/scholarship-exam'
-      fullPath: '/scholarship-exam'
-      preLoaderRoute: typeof ScholarshipExamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sayor': {
-      id: '/sayor'
-      path: '/sayor'
-      fullPath: '/sayor'
-      preLoaderRoute: typeof SayorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/publicity': {
-      id: '/publicity'
-      path: '/publicity'
-      fullPath: '/publicity'
-      preLoaderRoute: typeof PublicityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/programs': {
-      id: '/programs'
-      path: '/programs'
-      fullPath: '/programs'
-      preLoaderRoute: typeof ProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/president-message': {
-      id: '/president-message'
-      path: '/president-message'
-      fullPath: '/president-message'
-      preLoaderRoute: typeof PresidentMessageRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/moments': {
-      id: '/moments'
-      path: '/moments'
-      fullPath: '/moments'
-      preLoaderRoute: typeof MomentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/leadership': {
-      id: '/leadership'
-      path: '/leadership'
-      fullPath: '/leadership'
-      preLoaderRoute: typeof LeadershipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/honor-board': {
-      id: '/honor-board'
-      path: '/honor-board'
-      fullPath: '/honor-board'
-      preLoaderRoute: typeof HonorBoardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/felicitation': {
-      id: '/felicitation'
-      path: '/felicitation'
-      fullPath: '/felicitation'
-      preLoaderRoute: typeof FelicitationRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/convening-committee': {
-      id: '/convening-committee'
-      path: '/convening-committee'
-      fullPath: '/convening-committee'
-      preLoaderRoute: typeof ConveningCommitteeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -432,11 +341,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/convening-committee': {
+      id: '/convening-committee'
+      path: '/convening-committee'
+      fullPath: '/convening-committee'
+      preLoaderRoute: typeof ConveningCommitteeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/felicitation': {
+      id: '/felicitation'
+      path: '/felicitation'
+      fullPath: '/felicitation'
+      preLoaderRoute: typeof FelicitationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/honor-board': {
+      id: '/honor-board'
+      path: '/honor-board'
+      fullPath: '/honor-board'
+      preLoaderRoute: typeof HonorBoardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/leadership': {
+      id: '/leadership'
+      path: '/leadership'
+      fullPath: '/leadership'
+      preLoaderRoute: typeof LeadershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/moments': {
+      id: '/moments'
+      path: '/moments'
+      fullPath: '/moments'
+      preLoaderRoute: typeof MomentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/president-message': {
+      id: '/president-message'
+      path: '/president-message'
+      fullPath: '/president-message'
+      preLoaderRoute: typeof PresidentMessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publicity': {
+      id: '/publicity'
+      path: '/publicity'
+      fullPath: '/publicity'
+      preLoaderRoute: typeof PublicityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sayor': {
+      id: '/sayor'
+      path: '/sayor'
+      fullPath: '/sayor'
+      preLoaderRoute: typeof SayorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scholarship-exam': {
+      id: '/scholarship-exam'
+      path: '/scholarship-exam'
+      fullPath: '/scholarship-exam'
+      preLoaderRoute: typeof ScholarshipExamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/secretary-message': {
+      id: '/secretary-message'
+      path: '/secretary-message'
+      fullPath: '/secretary-message'
+      preLoaderRoute: typeof SecretaryMessageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/': {
+      id: '/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/$section': {
+      id: '/dashboard/$section'
+      path: '/dashboard/$section'
+      fullPath: '/dashboard/$section'
+      preLoaderRoute: typeof DashboardSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ec/$year': {
+      id: '/ec/$year'
+      path: '/ec/$year'
+      fullPath: '/ec/$year'
+      preLoaderRoute: typeof EcYearRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/honor-board/': {
@@ -446,19 +467,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HonorBoardIndexRouteImport
       parentRoute: typeof HonorBoardRoute
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard/'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/scholarship-exam_/status': {
-      id: '/scholarship-exam_/status'
-      path: '/scholarship-exam/status'
-      fullPath: '/scholarship-exam/status'
-      preLoaderRoute: typeof ScholarshipExamStatusRouteImport
-      parentRoute: typeof rootRouteImport
+    '/honor-board/$year': {
+      id: '/honor-board/$year'
+      path: '/$year'
+      fullPath: '/honor-board/$year'
+      preLoaderRoute: typeof HonorBoardYearRouteImport
+      parentRoute: typeof HonorBoardRoute
     }
     '/programs_/$slug': {
       id: '/programs_/$slug'
@@ -467,25 +481,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProgramsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/honor-board/$year': {
-      id: '/honor-board/$year'
-      path: '/$year'
-      fullPath: '/honor-board/$year'
-      preLoaderRoute: typeof HonorBoardYearRouteImport
-      parentRoute: typeof HonorBoardRoute
-    }
-    '/ec/$year': {
-      id: '/ec/$year'
-      path: '/ec/$year'
-      fullPath: '/ec/$year'
-      preLoaderRoute: typeof EcYearRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/$section': {
-      id: '/dashboard/$section'
-      path: '/dashboard/$section'
-      fullPath: '/dashboard/$section'
-      preLoaderRoute: typeof DashboardSectionRouteImport
+    '/scholarship-exam_/status': {
+      id: '/scholarship-exam_/status'
+      path: '/scholarship-exam/status'
+      fullPath: '/scholarship-exam/status'
+      preLoaderRoute: typeof ScholarshipExamStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
