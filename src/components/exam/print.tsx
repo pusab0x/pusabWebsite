@@ -32,3 +32,19 @@ export async function printArea() {
   // Some mobile browsers never fire afterprint.
   setTimeout(done, 60_000);
 }
+
+/** Save an on-page element straight to a one-page A4 PDF. It goes through an
+ *  image because the browser shapes Bengali correctly and PDF libraries don't. */
+export async function downloadPdf(node: HTMLElement, filename: string) {
+  const [{ toPng }, { jsPDF }] = await Promise.all([import("html-to-image"), import("jspdf")]);
+  await document.fonts?.ready;
+  const png = await toPng(node, { pixelRatio: 2, backgroundColor: "#FFFFFF" });
+  const pdf = new jsPDF({ unit: "mm", format: "a4" });
+  const margin = 10;
+  const width = pdf.internal.pageSize.getWidth() - margin * 2;
+  const maxHeight = pdf.internal.pageSize.getHeight() - margin * 2;
+  const height = (node.offsetHeight / node.offsetWidth) * width;
+  const scale = Math.min(1, maxHeight / height);
+  pdf.addImage(png, "PNG", margin + (width - width * scale) / 2, margin, width * scale, height * scale);
+  pdf.save(filename);
+}

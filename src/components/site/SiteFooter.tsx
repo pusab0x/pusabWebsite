@@ -163,7 +163,7 @@ export function SiteFooter() {
                 href="https://www.facebook.com/abin0x"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-foreground/80 transition-colors hover:text-[var(--color-accent-1)]"
+                className="ml-1 inline-block rounded-full border border-[var(--color-accent-1)]/40 bg-[var(--color-accent-1)]/10 px-3 py-1 text-[13px] font-bold text-[var(--color-accent-1)] transition-colors hover:bg-[var(--color-accent-1)] hover:text-white"
               >
                 Mahmudul Hasan Abin
               </a>

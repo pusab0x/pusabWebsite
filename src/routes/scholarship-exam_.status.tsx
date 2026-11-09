@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { flushSync } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { ApiError, examApi, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
@@ -21,7 +21,7 @@ import {
   type AdmitData,
 } from "@/components/exam/AdmitCards";
 import { ApplicationDocument } from "@/components/exam/ApplicationDocument";
-import { PrintArea, printArea } from "@/components/exam/print";
+import { PrintArea, downloadPdf, printArea } from "@/components/exam/print";
 
 export const Route = createFileRoute("/scholarship-exam_/status")({
   validateSearch: (search: Record<string, unknown>): { new?: 1 } =>
@@ -187,6 +187,8 @@ function Result({
   onSwitch: () => void;
 }) {
   const [printing, setPrinting] = useState<"application" | "admit">("application");
+  const [saving, setSaving] = useState(false);
+  const paperRef = useRef<HTMLDivElement>(null);
   const admit: AdmitData = {
     name_bn: app.name_bn,
     photo_url: app.photo_url,
@@ -203,6 +205,19 @@ function Result({
     flushSync(() => setPrinting(doc));
     if (doc === "admit") onDownloaded();
     printArea();
+  };
+
+  const saveApplication = async () => {
+    if (!paperRef.current) return;
+    setSaving(true);
+    try {
+      await downloadPdf(paperRef.current, `${app.application_no}.pdf`);
+    } catch {
+      // Some phones can't draw the page to an image; the print dialog still can.
+      printDoc("application");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const heading = rejected
@@ -245,9 +260,10 @@ function Result({
             </div>
           </div>
           {!rejected && (
-            <button type="button" onClick={() => printDoc("application")}
-              className="h-[52px] rounded-full bg-[#0284C7] text-base font-bold text-white transition-colors hover:bg-[#0369A1]">
-              আবেদনপত্র ডাউনলোড (PDF)
+            <button type="button" onClick={saveApplication} disabled={saving}
+              className="inline-flex h-[52px] items-center justify-center gap-2 rounded-full bg-[#0284C7] text-base font-bold text-white transition-colors hover:bg-[#0369A1] disabled:opacity-60">
+              {saving && <Loader2 size={18} className="animate-spin" />}
+              {saving ? "তৈরি হচ্ছে…" : "আবেদনপত্র ডাউনলোড (PDF)"}
             </button>
           )}
           {!rejected && !canDownload && (
@@ -274,6 +290,13 @@ function Result({
               <div className="md:hidden"><AdmitCardMobile data={admit} config={config} /></div>
             </>
           )}
+        </div>
+      </div>
+
+      {/* Off-screen A4-width copy, so the PDF looks the same on a phone. */}
+      <div aria-hidden="true" style={{ position: "fixed", left: -10000, top: 0 }}>
+        <div ref={paperRef} style={{ width: 794, padding: 44, boxSizing: "border-box", background: "#FFFFFF" }}>
+          <ApplicationDocument app={app} config={config} />
         </div>
       </div>
 

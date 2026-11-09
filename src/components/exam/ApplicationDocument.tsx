@@ -1,4 +1,5 @@
 import logoPusab from "@/assets/logo-pusab.png";
+import signaturePresident from "@/assets/signature-president.png";
 import { optimizeImage, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
 import { EXAM_ADMIT_START, ORG_NAME_BN, PRESIDENT_NAME_BN, formatPhone, titleWithEra, toBn } from "@/lib/exam";
 
@@ -86,15 +87,7 @@ export function ApplicationDocument({ app, config }: { app: ExamApplicationStatu
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
         <div style={{ width: 230, maxWidth: "100%", textAlign: "center", fontSize: 14, lineHeight: 1.5 }}>
-          <div
-            aria-hidden="true"
-            style={{
-              fontFamily: "'Galada', cursive", fontSize: 30, lineHeight: 1.3, color: "#1E3A8A", transform: "rotate(-4deg)",
-              printColorAdjust: "exact", WebkitPrintColorAdjust: "exact",
-            }}
-          >
-            {PRESIDENT_NAME_BN}
-          </div>
+          <img src={signaturePresident} alt="সভাপতির স্বাক্ষর" style={{ display: "block", width: 170, height: "auto", margin: "0 auto 4px" }} />
           <div style={{ borderTop: "1px solid #000000", paddingTop: 6, fontWeight: 700 }}>{PRESIDENT_NAME_BN}</div>
           <div>সভাপতি, পুসাব</div>
         </div>
