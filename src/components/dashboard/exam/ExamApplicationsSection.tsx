@@ -200,7 +200,7 @@ export function ExamApplicationsSection() {
             </div>
             <label className="flex h-11 min-w-[200px] flex-[1_1_200px] items-center gap-2 rounded-xl border border-[#CBD5E1] px-3 text-[#64748B] focus-within:border-[#0284C7]">
               <Search size={16} />
-              <input type="search" aria-label="Search" placeholder="নাম, মোবাইল বা TrxID" value={q} onChange={(e) => setQ(e.target.value)}
+              <input type="search" aria-label="Search" placeholder="নাম, আবেদন নম্বর, মোবাইল বা TrxID" value={q} onChange={(e) => setQ(e.target.value)}
                 className="min-w-0 flex-1 border-0 bg-transparent text-[15px] text-[#0F172A] outline-none" />
             </label>
             <select aria-label="শ্রেণি" value={cls} onChange={(e) => setCls(e.target.value)} className={selectCls}>
@@ -243,6 +243,7 @@ export function ExamApplicationsSection() {
                             </span>
                             <span className="flex flex-col">
                               <strong>{a.name_bn}</strong>
+                              <span className="font-inter text-xs font-semibold text-[#0369A1]">{a.application_no}</span>
                               <span className="font-inter text-xs text-[#64748B]">{a.phone}</span>
                             </span>
                           </div>
