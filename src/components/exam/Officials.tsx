@@ -18,7 +18,8 @@ function RuleText({ text }: { text: string }) {
  *  works on screen, in print and in the PDF. */
 export function AdmitRules({ fontSize = 13 }: { fontSize?: number }) {
   return (
-    <ul style={{ margin: 0, paddingLeft: 20, fontSize, lineHeight: 1.6, textAlign: "justify" }}>
+    // listStyle is explicit: Tailwind's reset strips bullets from every <ul>.
+    <ul style={{ margin: 0, paddingLeft: 22, listStyle: "disc outside", fontSize, lineHeight: 1.6, textAlign: "justify" }}>
       {ADMIT_RULES.map((rule) => (
         <li key={rule} style={{ marginBottom: 2 }}>
           <RuleText text={rule} />
