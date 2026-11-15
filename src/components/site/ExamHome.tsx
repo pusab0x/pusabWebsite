@@ -130,8 +130,8 @@ export function ExamHeroCard({ promo }: { promo: ExamPromo }) {
     <div className="exam-ui w-full text-left text-[#0F172A] [text-shadow:none]">
       {/* Laptop */}
       <div className="mx-auto hidden w-full max-w-[980px] flex-wrap items-stretch overflow-hidden rounded-[22px] bg-white shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] md:flex">
-        <Cell label="পরীক্ষা" value={config.short_title} sub="অষ্টম · নবম · দশম শ্রেণি" className="flex-[1_1_200px]" />
-        <Cell label="তারিখ" value={`${bnDate(date)}, ${bnWeekday(date)}`} sub={config.exam_time} className="flex-[1_1_180px]" />
+        <Cell label="মেধাবৃত্তি পরীক্ষা" value={config.short_title} sub={`আবেদন শুরু ${EXAM_APPLY_START} থেকে`} className="flex-[1_1_200px]" />
+        <Cell label="পরীক্ষা" value={`${bnDate(date)}, ${bnWeekday(date)}`} sub={config.exam_time} className="flex-[1_1_180px]" />
         <Cell label="আবেদন ফি" value={`${toBn(config.fee)} টাকা`} sub="বিকাশ / নগদ / রকেট" className="flex-[1_1_140px]" />
         <div className="flex flex-[1_1_220px] flex-col justify-center gap-2 bg-[#F0FAFE] p-4">
           {primary}
@@ -147,10 +147,13 @@ export function ExamHeroCard({ promo }: { promo: ExamPromo }) {
           <span className="font-inter text-[11px] font-bold tracking-[.14em] text-[#0284C7]">SCHOLARSHIP EXAM {config.year}</span>
           <strong className="text-[19px]">{config.title}</strong>
           <span className="text-sm text-[#475569]">অষ্টম · নবম · দশম শ্রেণি</span>
+          <span className="mt-1.5 w-fit rounded-full bg-[#E6F6FD] px-3 py-1 text-[13px] font-bold text-[#0369A1]">
+            আবেদন শুরু {EXAM_APPLY_START} থেকে
+          </span>
         </div>
         <div className="grid grid-cols-2">
           <div className="flex flex-col border-r border-[#E2E8F0] px-[18px] py-3.5">
-            <span className="text-xs text-[#64748B]">তারিখ</span>
+            <span className="text-xs text-[#64748B]">পরীক্ষা</span>
             <strong className="text-[15px]">{bnDateShort(date)}, {bnWeekday(date)}</strong>
             <span className="text-xs text-[#475569]">{shortTime(config.exam_time)}</span>
           </div>

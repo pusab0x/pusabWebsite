@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { AnimatePresence, motion } from "framer-motion";
-import { Loader2, Search, X } from "lucide-react";
+import { Download, Eye, Loader2, Search, X } from "lucide-react";
 import {
   examApi,
+  type ExamConfig,
   optimizeImage,
   type ExamApplication,
   type ExamCenter,
@@ -12,6 +13,8 @@ import {
 } from "@/lib/api";
 import { CLASS_OPTIONS, PAYMENT_LABELS, UNIONS, serialLabel, toBn, useExamConfig } from "@/lib/exam";
 import { Field, Modal, inputCls, useConfirm } from "@/components/dashboard/primitives";
+import { ApplicationDocument } from "@/components/exam/ApplicationDocument";
+import { downloadPdf } from "@/components/exam/print";
 import {
   ExamPageTitle,
   StatusPill,
@@ -293,6 +296,8 @@ export function ExamApplicationsSection() {
       <AnimatePresence>
         {selected && (
           <DetailDrawer
+            config={config}
+            centers={centers}
             key={selected.id}
             app={selected}
             busy={busyId === selected.id}
@@ -325,6 +330,8 @@ export function ExamApplicationsSection() {
 
 function DetailDrawer({
   app,
+  config,
+  centers,
   busy,
   onClose,
   onVerify,
@@ -333,6 +340,8 @@ function DetailDrawer({
   onDeleted,
 }: {
   app: ExamApplication;
+  config?: ExamConfig;
+  centers: ExamCenter[];
   busy: boolean;
   onClose: () => void;
   onVerify: (a: ExamApplication, note: string) => void;
@@ -342,9 +351,27 @@ function DetailDrawer({
 }) {
   const [note, setNote] = useState(app.note ?? "");
   const [confirm, confirmEl] = useConfirm();
+  const [paperOpen, setPaperOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const paperRef = useRef<HTMLDivElement>(null);
+  const c = centers.find((x) => x.id === app.center);
+  const centerText = c ? [c.name, c.location].filter(Boolean).join(", ") : app.center_name;
+
+  const savePaper = async () => {
+    if (!paperRef.current) return;
+    setSaving(true);
+    try {
+      await downloadPdf(paperRef.current, `${app.application_no}.pdf`);
+    } catch {
+      toast.error("PDF তৈরি করা যায়নি — আবার চেষ্টা করুন।");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    // Esc closes the open application paper first, then the drawer.
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && (paperOpen ? setPaperOpen(false) : onClose());
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKey);
@@ -352,7 +379,7 @@ function DetailDrawer({
       document.body.style.overflow = overflow;
       document.removeEventListener("keydown", onKey);
     };
-  }, [onClose]);
+  }, [onClose, paperOpen]);
 
   const remove = async () => {
     if (!(await confirm(`${app.name_bn}-এর আবেদন (${app.application_no}) স্থায়ীভাবে মুছে যাবে।`, "আবেদন মুছবেন?"))) return;
@@ -404,6 +431,16 @@ function DetailDrawer({
         </button>
       </div>
       <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-[18px]">
+        {config && (
+          <div className="flex gap-2.5">
+            <button type="button" onClick={() => setPaperOpen(true)} className={btnOutline + " h-10 flex-1 text-sm"}>
+              <Eye size={16} /> আবেদনপত্র দেখুন
+            </button>
+            <button type="button" onClick={savePaper} disabled={saving} className={btnPrimary + " h-10 flex-1 text-sm"}>
+              {saving ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />} PDF ডাউনলোড
+            </button>
+          </div>
+        )}
         <div className="flex gap-3.5">
           {app.photo_url ? (
             <a href={app.photo_url} target="_blank" rel="noopener noreferrer" className="h-[88px] w-[72px] flex-none overflow-hidden rounded-[10px] bg-[#E2E8F0]">
@@ -468,6 +505,41 @@ function DetailDrawer({
         </button>
       </div>
     </motion.aside>
+
+    {config && (
+      <>
+        {/* Off-screen A4-width copy for the PDF, same as the student's download. */}
+        <div aria-hidden="true" style={{ position: "fixed", left: -10000, top: 0 }}>
+          <div ref={paperRef} style={{ width: 794, padding: 44, boxSizing: "border-box", background: "#FFFFFF" }}>
+            <ApplicationDocument app={app} config={config} centerText={centerText} />
+          </div>
+        </div>
+        <AnimatePresence>
+          {paperOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setPaperOpen(false)}
+              className="fixed inset-0 z-[215] overflow-y-auto bg-[#0B2540]/60 p-3 sm:p-8"
+            >
+              <div onClick={(e) => e.stopPropagation()} className="mx-auto max-w-[820px] rounded-2xl bg-white p-4 sm:p-10">
+                <div className="mb-4 flex justify-end gap-2">
+                  <button type="button" onClick={savePaper} disabled={saving} className={btnPrimary + " h-10 text-sm"}>
+                    {saving ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />} PDF ডাউনলোড
+                  </button>
+                  <button type="button" aria-label="বন্ধ করুন" onClick={() => setPaperOpen(false)}
+                    className="grid h-10 w-10 place-items-center rounded-xl text-[#475569] hover:bg-[#F1F5F9]">
+                    <X size={18} />
+                  </button>
+                </div>
+                <ApplicationDocument app={app} config={config} centerText={centerText} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </>
+    )}
     </>
   );
 }

@@ -1,6 +1,6 @@
 import logoPusab from "@/assets/logo-pusab.png";
 import signaturePresident from "@/assets/signature-president.png";
-import { optimizeImage, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
+import { optimizeImage, type ExamApplication, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
 import { EXAM_ADMIT_START, ORG_NAME_BN, PRESIDENT_NAME_BN, formatPhone, titleWithEra, toBn } from "@/lib/exam";
 
 const FONT = "'Hind Siliguri', 'Noto Sans Bengali', 'Kalpurush', 'SolaimanLipi', 'Nirmala UI', sans-serif";
@@ -10,7 +10,18 @@ const appliedOn = (iso: string) =>
 
 /** The student's own copy of what they submitted. Fluid on screen; printed
  *  inside a fixed A4-width wrapper, so it avoids viewport breakpoints. */
-export function ApplicationDocument({ app, config }: { app: ExamApplicationStatus; config: ExamConfig }) {
+export function ApplicationDocument({
+  app,
+  config,
+  centerText,
+}: {
+  app: ExamApplicationStatus | ExamApplication;
+  config: ExamConfig;
+  /** The admin list only carries the centre's id, so the caller names it. */
+  centerText?: string;
+}) {
+  const center =
+    centerText ?? (typeof app.center === "object" ? [app.center.name, app.center.location].filter(Boolean).join(", ") : "");
   const rows: [string, string, boolean?][] = [
     ["নাম (বাংলায়)", app.name_bn],
     ["নাম (ইংরেজি)", app.name_en, true],
@@ -21,7 +32,7 @@ export function ApplicationDocument({ app, config }: { app: ExamApplicationStatu
     ["শিক্ষা প্রতিষ্ঠান", app.institution],
     ["গ্রাম", app.village],
     ["ইউনিয়ন", app.union],
-    ["পরীক্ষা কেন্দ্র", [app.center.name, app.center.location].filter(Boolean).join(", ")],
+    ["পরীক্ষা কেন্দ্র", center],
     ["পেমেন্ট মাধ্যম", app.payment_label],
     ["Transaction ID", app.trx_id || "—", true],
     ["আবেদন ফি", `${toBn(app.amount)} টাকা`],
