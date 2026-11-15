@@ -22,6 +22,7 @@ import {
 } from "@/components/exam/AdmitCards";
 import { ApplicationDocument } from "@/components/exam/ApplicationDocument";
 import { PrintArea, downloadPdf, printArea } from "@/components/exam/print";
+import { ManualLink } from "@/components/exam/ManualLink";
 
 export const Route = createFileRoute("/scholarship-exam_/status")({
   validateSearch: (search: Record<string, unknown>): { new?: 1 } =>
@@ -144,6 +145,7 @@ function LookupForm({
       <Link to={EXAM_PATH} className="text-center text-sm font-semibold text-[#0284C7]">
         এখনো আবেদন করেননি? আবেদন করুন →
       </Link>
+      <ManualLink className="self-center" />
     </form>
   );
 }

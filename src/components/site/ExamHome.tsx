@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { ExamConfig } from "@/lib/api";
+import { ManualLink } from "@/components/exam/ManualLink";
 import {
   EXAM_ADMIT_START,
   EXAM_APPLY_START,
@@ -210,6 +211,7 @@ export function ExamStepsSection({ promo }: { promo: ExamPromo }) {
           <Link to={promo.mode === "apply" ? EXAM_PATH : EXAM_STATUS_PATH} className="mt-1 self-start text-base font-bold text-[#0284C7] hover:text-[#0369A1]">
             {promo.mode === "apply" ? "আবেদন শুরু করুন →" : "প্রবেশপত্র নিন →"}
           </Link>
+          <ManualLink />
         </div>
         <ol className="m-0 grid w-full flex-[1_1_480px] list-none grid-cols-1 gap-3.5 p-0 sm:grid-cols-3">
           {steps.map((s, i) => (

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
+import { ManualLink } from "@/components/exam/ManualLink";
 import {
   ApiError,
   examApi,
@@ -170,6 +171,7 @@ function HeaderBand({ config }: { config?: ExamConfig }) {
             </span>
           </p>
           <p className="mt-2 text-sm font-semibold md:text-[15px]">আবেদন শুরু: {EXAM_APPLY_START} · প্রবেশপত্র ডাউনলোড: {EXAM_ADMIT_START} থেকে</p>
+          <ManualLink dark className="mt-2" />
         </div>
         {config && (
           <div className="grid w-full flex-[0_1_460px] grid-cols-2 gap-2 md:w-auto md:grid-cols-3 md:gap-2.5">
