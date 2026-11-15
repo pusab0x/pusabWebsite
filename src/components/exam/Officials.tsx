@@ -32,14 +32,19 @@ export function NoticeList({ items, fontSize = 13 }: { items: string[]; fontSize
  *  works on screen, in print and in the PDF. */
 export function AdmitRules({ fontSize = 13 }: { fontSize?: number }) {
   return (
-    // listStyle is explicit: Tailwind's reset strips bullets from every <ul>.
-    <ul style={{ margin: 0, paddingLeft: 22, listStyle: "disc outside", fontSize, lineHeight: 1.6, textAlign: "justify" }}>
-      {ADMIT_RULES.map((rule) => (
-        <li key={rule} style={{ marginBottom: 2 }}>
-          <RuleText text={rule} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      <div style={{ fontSize: fontSize + 2, fontWeight: 700, textDecoration: "underline", textUnderlineOffset: 4, marginBottom: 6 }}>
+        পরীক্ষার নিয়মাবলি
+      </div>
+      {/* listStyle is explicit: Tailwind's reset strips bullets from every <ul>. */}
+      <ul style={{ margin: 0, paddingLeft: 22, listStyle: "disc outside", fontSize, lineHeight: 1.6, textAlign: "justify" }}>
+        {ADMIT_RULES.map((rule) => (
+          <li key={rule} style={{ marginBottom: 2 }}>
+            <RuleText text={rule} />
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
