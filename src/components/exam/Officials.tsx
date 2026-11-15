@@ -7,10 +7,24 @@ const LINK: CSSProperties = { fontFamily: "Inter, sans-serif", color: "#0369A1" 
 function RuleText({ text }: { text: string }) {
   return (
     <>
-      {text.split(/(www\.[^\s)]+)/).map((part, i) =>
-        part.startsWith("www.") ? <span key={i} style={LINK}>{part}</span> : part,
+      {text.split(/((?:https:\/\/)?www\.[^\s)]+)/).map((part, i) =>
+        /^(https:\/\/)?www\./.test(part) ? <span key={i} style={LINK}>{part}</span> : part,
       )}
     </>
+  );
+}
+
+/** A bulleted list with its web addresses picked out. */
+export function NoticeList({ items, fontSize = 13 }: { items: string[]; fontSize?: number }) {
+  return (
+    // listStyle is explicit: Tailwind's reset strips bullets from every <ul>.
+    <ul style={{ margin: 0, paddingLeft: 20, listStyle: "disc outside", fontSize, lineHeight: 1.6 }}>
+      {items.map((item) => (
+        <li key={item} style={{ marginBottom: 4, overflowWrap: "anywhere" }}>
+          <RuleText text={item} />
+        </li>
+      ))}
+    </ul>
   );
 }
 

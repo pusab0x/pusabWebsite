@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { ManualLink } from "@/components/exam/ManualLink";
+import { NoticeList } from "@/components/exam/Officials";
 import {
   ApiError,
   examApi,
@@ -17,7 +18,8 @@ import {
   EXAM_ADMIT_START,
   EXAM_APPLY_START,
   EXAM_STATUS_PATH,
-  INSTRUCTIONS,
+  ADMIT_RULES,
+  EXAM_GUIDELINES,
   MARKS,
   PAYMENT_LABELS,
   UNIONS,
@@ -414,10 +416,12 @@ function ExamForm({ config }: { config: ExamConfig }) {
         {/* Mobile: marks & instructions folded away */}
         <details className="rounded-2xl border border-[#E2E8F0] bg-white p-4 md:hidden">
           <summary className="min-h-7 cursor-pointer text-base font-bold">মানবণ্টন ও নির্দেশনা দেখুন</summary>
-          <ul className="mt-3 flex list-disc flex-col gap-1.5 pl-[18px] text-sm leading-[1.55] text-[#334155]">
-            <li>বাংলা ২৫ · গণিত ২৫ · ইংরেজি ২৫ · বিজ্ঞান/আইসিটি/সাধারণ জ্ঞান ২৫</li>
-            {INSTRUCTIONS.filter((_, i) => i !== 1).map((t) => <li key={t}>{t}</li>)}
-          </ul>
+          <div className="mt-3 flex flex-col gap-3 text-[#334155]">
+            <strong className="text-[15px] text-[#0F172A]">প্রয়োজনীয় নির্দেশনাবলি</strong>
+            <NoticeList items={EXAM_GUIDELINES} fontSize={14} />
+            <strong className="text-[15px] text-[#0F172A]">পরীক্ষার নিয়মাবলি</strong>
+            <NoticeList items={ADMIT_RULES} fontSize={14} />
+          </div>
         </details>
 
         {/* Confirm + submit */}
@@ -688,10 +692,10 @@ function Sidebar({ config }: { config: ExamConfig }) {
         </div>
       </section>
       <section className="flex flex-col gap-3 rounded-[18px] border border-[#E2E8F0] bg-white px-[22px] py-5">
-        <h2 className="text-lg font-bold">জরুরি নির্দেশনা</h2>
-        <ul className="flex list-disc flex-col gap-2 pl-[18px] text-[15px] leading-[1.55] text-[#334155]">
-          {INSTRUCTIONS.map((t) => <li key={t}>{t}</li>)}
-        </ul>
+        <h2 className="text-lg font-bold">প্রয়োজনীয় নির্দেশনাবলি</h2>
+        <div className="text-[#334155]"><NoticeList items={EXAM_GUIDELINES} fontSize={14.5} /></div>
+        <h2 className="mt-2 text-lg font-bold">পরীক্ষার নিয়মাবলি</h2>
+        <div className="text-[#334155]"><NoticeList items={ADMIT_RULES} fontSize={14.5} /></div>
       </section>
       {config.contacts.length > 0 && (
         <section className="flex flex-col gap-3 rounded-[18px] bg-[#0F172A] px-[22px] py-5 text-white">
