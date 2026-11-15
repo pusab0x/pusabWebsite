@@ -297,7 +297,7 @@ export function ExamAdmitCardsSection() {
 
       {config && printMode === "admits" && (
         <PrintArea>
-          {chunk(printSet, 2).map((pair, i) => (
+          {chunk(printSet, 1).map((pair, i) => (
             <div key={i} className="print-page">
               {pair.map((a) => <AdmitCardPrint key={a.id} data={toAdmit(a, centers)} config={config} />)}
             </div>

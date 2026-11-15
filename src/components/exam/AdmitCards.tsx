@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import logoPusab from "@/assets/logo-pusab.png";
 import { optimizeImage, type ExamConfig } from "@/lib/api";
+import { AdmitRules, OfficialsBlock } from "./Officials";
 import {
   ORG_NAME_BN,
   bnDateLong,
@@ -80,15 +81,10 @@ export function AdmitCardArticle({ data, config, pendingLabel = "যাচাই
           </table>
         </div>
       </div>
-      <div className="flex flex-wrap items-end justify-between gap-4 pt-2">
-        <span className="max-w-[420px] text-[13px] leading-relaxed text-[#475569]">
-          পরীক্ষা শুরুর ৩০ মিনিট আগে উপস্থিত থাকুন। প্রবেশপত্র ও সাধারণ ক্যালকুলেটর সঙ্গে আনুন।
-        </span>
-        <div className="flex flex-col items-center gap-1">
-          <span className="w-[140px] border-t border-[#475569]" />
-          <span className="text-sm">সভাপতি, পুসাব</span>
-        </div>
+      <div className="border-t border-[#E2E8F0] pt-5">
+        <AdmitRules fontSize={14} />
       </div>
+      <OfficialsBlock />
     </article>
   );
 }
@@ -145,6 +141,10 @@ export function AdmitCardMobile({ data, config, pendingLabel = "যাচাই�
         <div className="rounded-xl bg-[#F5F7FA] p-3 text-sm leading-relaxed">
           <strong>{bnDateLong(config.exam_date)}</strong> · {bnWeekday(config.exam_date)} · {config.exam_time}
         </div>
+        <div className="border-t border-[#E2E8F0] pt-3.5">
+          <AdmitRules />
+        </div>
+        <OfficialsBlock fontSize={13} />
       </div>
     </div>
   );
@@ -162,9 +162,16 @@ function MobileField({ label, value }: { label: string; value: string }) {
 const DOTTED = { borderBottom: "2px dotted #000000", fontWeight: 500, lineHeight: 1.2 } as const;
 
 /** The printable admit card — a 794×440px strip (A4 width at 96dpi) that
- *  matches the original paper form; two or three fit on one A4 sheet. */
+ *  matches the original paper form, with the rules and contacts below it.
+ *  One fills an A4 sheet. */
 export function AdmitCardPrint({ data, config }: { data: AdmitData; config: ExamConfig }) {
   return (
+    <div
+      style={{
+        width: 794, background: "#FFFFFF", color: "#000000", breakInside: "avoid",
+        fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', 'Kalpurush', 'SolaimanLipi', 'Nirmala UI', sans-serif",
+      }}
+    >
     <div
       className="admit-print"
       style={{
@@ -266,6 +273,11 @@ export function AdmitCardPrint({ data, config }: { data: AdmitData; config: Exam
           </tr>
         </tbody>
       </table>
+    </div>
+      <div style={{ padding: "4px 72px 0", display: "flex", flexDirection: "column", gap: 18 }}>
+        <AdmitRules />
+        <OfficialsBlock fontSize={13} />
+      </div>
     </div>
   );
 }

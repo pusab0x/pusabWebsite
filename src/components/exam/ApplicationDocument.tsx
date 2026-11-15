@@ -1,7 +1,7 @@
 import logoPusab from "@/assets/logo-pusab.png";
-import signaturePresident from "@/assets/signature-president.png";
 import { optimizeImage, type ExamApplication, type ExamApplicationStatus, type ExamConfig } from "@/lib/api";
-import { EXAM_ADMIT_START, ORG_NAME_BN, PRESIDENT_NAME_BN, formatPhone, titleWithEra, toBn } from "@/lib/exam";
+import { EXAM_ADMIT_START, ORG_NAME_BN, formatPhone, titleWithEra, toBn } from "@/lib/exam";
+import { OfficialsBlock } from "./Officials";
 
 const FONT = "'Hind Siliguri', 'Noto Sans Bengali', 'Kalpurush', 'SolaimanLipi', 'Nirmala UI', sans-serif";
 
@@ -96,12 +96,8 @@ export function ApplicationDocument({
         প্রবেশপত্র {EXAM_ADMIT_START} থেকে ডাউনলোড করা যাবে। আবেদন নম্বর ও মোবাইল নম্বর সংরক্ষণ করে রাখুন।
       </p>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 24 }}>
-        <div style={{ width: 230, maxWidth: "100%", textAlign: "center", fontSize: 14, lineHeight: 1.5 }}>
-          <img src={signaturePresident} alt="সভাপতির স্বাক্ষর" style={{ display: "block", width: 170, height: "auto", margin: "0 auto 4px" }} />
-          <div style={{ borderTop: "1px solid #000000", paddingTop: 6, fontWeight: 700 }}>{PRESIDENT_NAME_BN}</div>
-          <div>সভাপতি, পুসাব</div>
-        </div>
+      <div style={{ marginTop: 28 }}>
+        <OfficialsBlock />
       </div>
     </article>
   );
